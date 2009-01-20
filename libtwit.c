@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <curl/curl.h>
-#include <libxml/xmlreader.h>
+#include <libxml/parser.h>
+
+#include "libtwit.h"
 
 #define XML_FILE "blakesmith.xml"
 
 xmlDocPtr open_user_timeline()
 {
 	xmlDocPtr doc;
-	doc = xmlParseFile(XML_FILE);	
+	doc = xmlReadFile(XML_FILE, NULL, XML_PARSE_NOBLANKS);	
 	return doc;
 }
 
@@ -16,23 +18,21 @@ void parse_user_timeline(xmlDocPtr doc, xmlNodePtr cur)
 	xmlChar *id;
 	xmlNodePtr children;
 
-	cur = cur->xmlChildrenNode;
-	
-	while (cur != NULL)
+	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next)
 	{
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
 		{
 			for (children = cur->children; children != NULL; children = children->next)
 			{
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"id")))
-				{
+				if ((!xmlStrcmp(children->name, (const xmlChar *)"user")))
+					printf("User operations go here\n");
+				else {
 					id = xmlNodeGetContent(children);
-					printf("id: %s\n", id);
+					printf("%s: %s\n", children->name, id);
 					xmlFree(id);
 				}
 			}
 		}
-		cur = cur->next;
 	}
 }
 
@@ -104,6 +104,7 @@ int main(int argc, char *argv[])
 	doc = open_user_timeline();
 	cur = xmlDocGetRootElement(doc);
 	parse_user_timeline(doc, cur);
+	xmlFreeDoc(doc);
 
 	return 0;
 }
