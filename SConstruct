@@ -1,0 +1,5 @@
+env = Environment()
+conf = Configure(env)
+conf.CheckLib('curl')
+env = conf.Finish()
+env.Program('libtwit.c')
