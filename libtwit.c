@@ -70,27 +70,18 @@ void parse_user_timeline(xmlDocPtr doc, xmlNodePtr cur)
 }
 
 
-/*CURL *(setup_curl_handle)
+int is_authenticated()
 {
-	CURL *easyhandle;
-	CURLcode success;
-
-	curl_handle = curl_easy_init();
-	return curl_handle;
-}
-
-bool is_authenticated()
-{
-	return True;	
+	return 0;	
 }
 
 
-int twitter_login(char username, char password)
+int twitter_login(CURL *curl_handle, char username, char password)
 {
-	if (!is_authenticated)
+	if (!is_authenticated())
 	{
 		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, username);
-		curl_easy_setopt(curl_handle, CURLOPT_USERPASS, password);
+		curl_easy_setopt(curl_handle, CURLOPT_USERPWD, password);
 
 		return 0;
 	}
@@ -100,7 +91,7 @@ int twitter_login(char username, char password)
 		
 
 
-void retrieve_xml_file()
+int retrieve_xml_file()
 {
 	CURL *easyhandle;
 	CURLcode success;
@@ -128,7 +119,6 @@ void retrieve_xml_file()
 	else
 		return -1;
 }
-*/
 
 int main(int argc, char *argv[])
 {
