@@ -76,6 +76,7 @@ struct tweet *parse_user_timeline(xmlDocPtr doc, xmlNodePtr cur)
 				starting_tweet = current_tweet;
 
 //			current_tweet->user = populate_user_data()
+			current_tweet->next = NULL;
 			current_tweet->prev = previous_tweet;
 			current_tweet->created_at = get_node_value(cur, "created_at");
 			current_tweet->id = atoi(get_node_value(cur, "id"));
