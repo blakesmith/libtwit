@@ -36,6 +36,18 @@ char *get_node_value(xmlNodePtr parent, char *search_string)
 	}
 }
 
+int sanitize_string_bool(xmlChar *test_string)
+{
+	if ((!xmlStrcmp(test_string, (const xmlChar *) "false")))
+		return 0;
+
+	else if ((!xmlStrcmp(test_string, (const xmlChar *) "true")))
+		return 1;
+
+	else
+		return -1;
+}
+
 void parse_user_timeline(xmlDocPtr doc, xmlNodePtr cur)
 {
 	xmlNodePtr children;
@@ -54,13 +66,15 @@ void parse_user_timeline(xmlDocPtr doc, xmlNodePtr cur)
 			current_tweet->id = atoi(get_node_value(cur, "id"));
 			current_tweet->text = get_node_value(cur, "text");
 			current_tweet->source = get_node_value(cur, "source");
-//			current_tweet->truncated = get_node_value(cur, "truncated");
+			current_tweet->truncated = sanitize_string_bool(get_node_value(cur, "truncated"));
 			current_tweet->in_reply_to_status_id = atoi(get_node_value(cur, "in_reply_to_status_id"));
 			current_tweet->in_reply_to_user_id = atoi(get_node_value(cur, "in_reply_to_user_id"));
-//			current_tweet->favorited = get_node_value(cur, "favorited");
+			current_tweet->favorited = sanitize_string_bool(get_node_value(cur, "favorited"));
 			current_tweet->in_reply_to_screen_name = get_node_value(cur, "in_reply_to_screen_name");
 			printf("========================\n");
 			printf("%i\n", current_tweet->id);
+			printf("%i\n", current_tweet->truncated);
+			printf("%i\n", current_tweet->favorited);
 			printf("%s\n", current_tweet->created_at);
 			printf("%s\n", current_tweet->text);
 		}
@@ -70,7 +84,7 @@ void parse_user_timeline(xmlDocPtr doc, xmlNodePtr cur)
 
 int is_authenticated()
 {
-	return 0;	
+	return 1;	
 }
 
 

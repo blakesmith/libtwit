@@ -1,12 +1,12 @@
 struct twitter_user
 {
 	int id;
-	char *name;
-	char *screen_name;
-	char *location;
-	char *description;
-	char *profile_image_url;
-	char *url;
+	xmlChar *name;
+	xmlChar *screen_name;
+	xmlChar *location;
+	xmlChar *description;
+	xmlChar *profile_image_url;
+	xmlChar *url;
 	int prot;
 	int follower_count;
 };
