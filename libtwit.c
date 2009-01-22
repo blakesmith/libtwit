@@ -22,10 +22,22 @@ struct tweet *create_tweet(struct tweet *previous_node)
 	return newTweet;
 }
 
+char *get_node_value(xmlNodePtr parent, char *search_string)
+{
+	char *value;
+
+	for (parent = parent->children; parent != NULL; parent = parent->next)
+	{
+		if ((!xmlStrcmp(parent->name, (const xmlChar *) search_string)))
+		{
+			value = (char *) xmlNodeGetContent(parent);
+			return value;
+		}
+	}
+}
 
 void parse_user_timeline(xmlDocPtr doc, xmlNodePtr cur)
 {
-	xmlChar *value;
 	xmlNodePtr children;
 	struct tweet *current_tweet = NULL;
 	struct tweet *previous_tweet = NULL;
@@ -37,34 +49,20 @@ void parse_user_timeline(xmlDocPtr doc, xmlNodePtr cur)
 			previous_tweet = current_tweet; /* First loop this is NULL */
 			current_tweet = create_tweet(previous_tweet);
 
-			for (children = cur->children; children != NULL; children = children->next)
-			{
-				value = xmlNodeGetContent(children);
-			//	if ((!xmlStrcmp(children->name, (const xmlChar *)"user")))
-//					printf("User operations go here\n");
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"created_at")))
-					current_tweet->created_at = (char *) value;
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"id")))
-					current_tweet->id = (const int)value;
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"text")))
-					current_tweet->text = value;
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"source")))
-					current_tweet->source = value;
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"truncated")))
-					current_tweet->truncated = (const int)value;
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"in_reply_to_status_id")))
-					current_tweet->in_reply_to_status_id = (const int)value;
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"in_reply_to_user_id")))
-					current_tweet->in_reply_to_user_id = (const int)value;
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"favorited")))
-					current_tweet->favorited = (const int)value;
-				if ((!xmlStrcmp(children->name, (const xmlChar *)"in_reply_to_screen_name")))
-					current_tweet->in_reply_to_screen_name = value;
-//					printf("%s: %s\n", children->name, value);
-				xmlFree(value);
-			}
-			printf("%s\n", value);
+//			current_tweet->user = populate_user_data()
+			current_tweet->created_at = get_node_value(cur, "created_at");
+			current_tweet->id = atoi(get_node_value(cur, "id"));
+			current_tweet->text = get_node_value(cur, "text");
+			current_tweet->source = get_node_value(cur, "source");
+//			current_tweet->truncated = get_node_value(cur, "truncated");
+			current_tweet->in_reply_to_status_id = atoi(get_node_value(cur, "in_reply_to_status_id"));
+			current_tweet->in_reply_to_user_id = atoi(get_node_value(cur, "in_reply_to_user_id"));
+//			current_tweet->favorited = get_node_value(cur, "favorited");
+			current_tweet->in_reply_to_screen_name = get_node_value(cur, "in_reply_to_screen_name");
+			printf("========================\n");
+			printf("%i\n", current_tweet->id);
 			printf("%s\n", current_tweet->created_at);
+			printf("%s\n", current_tweet->text);
 		}
 	}
 }
@@ -89,8 +87,6 @@ int twitter_login(CURL *curl_handle, char username, char password)
 		return -1;
 }
 		
-
-
 int retrieve_xml_file()
 {
 	CURL *easyhandle;
