@@ -22,12 +22,15 @@ struct tweet *create_tweet(struct tweet *previous_node)
 	return newTweet;
 }
 
-void destroy_tweets(struct tweet *starting_tweet)
+void destroy_tweets(struct tweet *current)
 {
-	struct tweet *i;
 
-	for (i = starting_tweet; i->next != NULL; i++)
-		free(i);
+	while (current != NULL)
+	{
+		struct tweet *i = current->next;
+		free(current);
+		current = i;
+	}
 }
 
 char *get_node_value(xmlNodePtr parent, char *search_string)
@@ -96,7 +99,7 @@ void display_tweets(struct tweet *starting_tweet)
 {
 	struct tweet *i;
 
-	for (i = starting_tweet; i->next != NULL; i = i->next)
+	for (i = starting_tweet; i != NULL; i = i->next)
 	{
 		printf("created_at: %s\n"
 			"id: %i\n"
