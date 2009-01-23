@@ -8,7 +8,7 @@ struct twitter_user
 	xmlChar *profile_image_url;
 	xmlChar *url;
 	int prot;
-	int follower_count;
+	int followers_count;
 };
 
 struct tweet
