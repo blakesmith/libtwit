@@ -36,6 +36,7 @@ void destroy_tweets(struct tweet *current)
 	while (current != NULL)
 	{
 		struct tweet *i = current->next;
+		free(current->user);
 		free(current);
 		current = i;
 	}
