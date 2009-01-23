@@ -148,7 +148,16 @@ void display_tweets(struct tweet *starting_tweet)
 			"in_reply_to_user_id: %i\n"
 			"favorited: %i\n"
 			"in_reply_to_screen_name: %s\n" 
-			"user: %s\n",
+			"user: \n"
+			"\tid: %i\n"
+			"\tname: %s\n"
+			"\tscreen_name: %s\n"
+			"\tlocation: %s\n"
+			"\tdescription: %s\n"
+			"\tprofile_image_url: %s\n"
+			"\turl: %s\n"
+			"\tprotected: %i\n"
+			"\tfollowers_count: %i\n",
 			
 			i->created_at,
 			i->id,
@@ -159,7 +168,15 @@ void display_tweets(struct tweet *starting_tweet)
 			i->in_reply_to_user_id,
 			i->favorited,
 			i->in_reply_to_screen_name,
-			i->user->name);
+			i->user->id,
+			i->user->name,
+			i->user->screen_name,
+			i->user->location,
+			i->user->description,
+			i->user->profile_image_url,
+			i->user->url,
+			i->user->prot,
+			i->user->followers_count);
 		printf("===================================\n");
 	}
 }
