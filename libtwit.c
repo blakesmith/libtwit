@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <time.h>
 #include <curl/curl.h>
 #include <libxml/parser.h>
 
 #include "libtwit.h"
 
 #define XML_FILE "blakesmith.xml"
+#define SLENGTH 255
 
 xmlDocPtr open_user_timeline()
 {
@@ -116,10 +118,10 @@ struct tweet *parse_user_timeline(xmlNodePtr cur)
 			else
 				starting_tweet = current_tweet;
 
+			strptime((char *)get_node_value(cur, "created_at"), "%a %b %d %H:%M:%S +0000 %Y", &(current_tweet->created_at)); /* Sets the created_at */
 			current_tweet->user = get_user_data(get_node_ptr(cur, "user"));
 			current_tweet->next = NULL;
 			current_tweet->prev = previous_tweet;
-			current_tweet->created_at = get_node_value(cur, "created_at");
 			current_tweet->id = atoi(get_node_value(cur, "id"));
 			current_tweet->text = get_node_value(cur, "text");
 			current_tweet->source = get_node_value(cur, "source");
@@ -139,6 +141,8 @@ void display_tweets(struct tweet *starting_tweet)
 
 	for (i = starting_tweet; i != NULL; i = i->next)
 	{
+		char created_char[SLENGTH];
+		strftime(created_char, SLENGTH, "%a %b %d %H:%M:%S %Y", &(i->created_at));
 		printf("created_at: %s\n"
 			"id: %i\n"
 			"text: %s\n"
@@ -159,7 +163,7 @@ void display_tweets(struct tweet *starting_tweet)
 			"\tprotected: %i\n"
 			"\tfollowers_count: %i\n",
 			
-			i->created_at,
+			created_char,
 			i->id,
 			i->text,
 			i->source,

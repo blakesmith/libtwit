@@ -1,3 +1,5 @@
+#include <time.h>
+
 struct twitter_user
 {
 	int id;
@@ -15,7 +17,7 @@ struct tweet
 {
 	struct tweet *prev;
 	struct tweet *next;
-	xmlChar *created_at;
+	struct tm created_at;
 	int id;
 	xmlChar *text;
 	xmlChar *source;
