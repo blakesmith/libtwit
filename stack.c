@@ -32,7 +32,7 @@ void destroy_resource_list(struct resource_list *current_resource)
 	}
 }
 
-extern struct stack *libtwit_init()
+struct stack *libtwit_init()
 {
 	libtwit_stack = malloc(sizeof(struct stack));
 }
