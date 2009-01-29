@@ -37,7 +37,7 @@ extern struct stack *libtwit_init()
 	libtwit_stack = malloc(sizeof(struct stack));
 }
 
-void libtwit_cleanup()
+void libtwit_deinit()
 {
 	destroy_resource_list(libtwit_stack->first_node);
 	free(libtwit_stack);

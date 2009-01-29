@@ -263,5 +263,7 @@ int main(int argc, char *argv[])
 		xmlFreeDoc(doc);
 	}
 
+	libtwit_deinit();
+
 	return 0;
 }
