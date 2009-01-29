@@ -1,6 +1,6 @@
 #J vim:syntax=python
 
-cflags= []
+cflags= ["-ggdb"]
 env = Environment(CFLAGS=cflags)
 conf = Configure(env)
 conf.CheckLib('curl')

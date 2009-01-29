@@ -25,6 +25,12 @@ struct tweet *create_tweet(struct tweet *previous_node)
 	struct tweet *newTweet;
 	newTweet = malloc(sizeof(struct tweet));
 
+	if (newTweet == NULL)
+	{
+		printf("Out of memory, dying...");
+		exit(0);
+	}
+
 	newTweet->prev = previous_node;
 	return newTweet;
 }
@@ -137,7 +143,7 @@ struct tweet *parse_user_timeline(xmlNodePtr cur)
 			current_tweet->in_reply_to_screen_name = get_node_value(cur, "in_reply_to_screen_name");
 		}
 	}
-	libtwit_stack->add_tweet_list(starting_tweet);
+	add_tweet_list(starting_tweet);
 
 	return starting_tweet;
 }
@@ -259,10 +265,8 @@ int main(int argc, char *argv[])
 		cur = xmlDocGetRootElement(doc);
 		starting_tweet = parse_user_timeline(cur);
 		display_tweets(starting_tweet);
-		destroy_tweets(starting_tweet);
 		xmlFreeDoc(doc);
 	}
-
 	libtwit_deinit();
 
 	return 0;

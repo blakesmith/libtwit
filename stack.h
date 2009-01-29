@@ -6,7 +6,7 @@
 
 struct resource_list
 {
-	struct tweet **first_node;
+	struct tweet *first_node;
 	struct resource_list *next;
 	struct resource_list *prev;
 };
@@ -16,14 +16,11 @@ struct stack
 	struct resource_list *first_node;
 	struct resource_list *current_node;
 
-	/* Functions */
-
-	struct tweet (*add_tweet_list)(struct tweet *first_node);
 };
 
 struct stack *libtwit_stack;
 
-struct tweet **add_tweet_list(struct tweet *first_node);
+struct tweet *add_tweet_list(struct tweet *first_node);
 
 void destroy_tweets(struct tweet *current);
 
