@@ -1,3 +1,6 @@
+#ifndef LIBTWIT_STACK_H
+#define LIBTWIT_STACK_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,7 +11,7 @@ struct resource_list
 	struct resource_list *prev;
 };
 
-typedef struct
+struct stack
 {
 	struct resource_list *first_node;
 	struct resource_list *current_node;
@@ -16,7 +19,9 @@ typedef struct
 	/* Functions */
 
 	struct tweet (*add_tweet_list)(struct tweet *first_node);
-} stack;
+};
+
+struct stack *libtwit_stack;
 
 struct tweet **add_tweet_list(struct tweet *first_node);
 
@@ -24,3 +29,4 @@ void destroy_tweets(struct tweet *current);
 
 void destroy_resource_list(struct resource_list *current_resource);
 
+#endif

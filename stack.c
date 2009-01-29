@@ -1,34 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "libtwit.h"
 #include "stack.h"
 
-struct tweet **add_tweet_list(stack *libtwit_stack, struct tweet *first_node)
+struct tweet **add_tweet_list(struct tweet *first_node)
 {
+	extern struct stack *libtwit_stack;
+
 	struct resource_list *resource_list = malloc(sizeof(resource_list));
 	resource_list->first_node = &first_node;
 
 	if (libtwit_stack->current_node != NULL)
-		resource_list->prev = current_node;
+		resource_list->prev = libtwit_stack->current_node;
 	else
-		libtwit_stack->first_node = current_node;
+		libtwit_stack->first_node = libtwit_stack->current_node;
 
-	libtwit_stack->current_node = &first_node;
+	libtwit_stack->current_node = resource_list;
 	
 	return resource_list->first_node;
-}
-
-void destroy_tweets(struct tweet *current)
-{
-
-	while (current != NULL)
-	{
-		struct tweet *i = current->next;
-		free(current->user);
-		free(current);
-		current = i;
-	}
 }
 
 void destroy_resource_list(struct resource_list *current_resource)
@@ -43,14 +32,12 @@ void destroy_resource_list(struct resource_list *current_resource)
 	}
 }
 
-stack *libtwit_init()
+extern struct stack *libtwit_init()
 {
-	stack *libtwit_stack = malloc(sizeof(stack));
-
-	return libtwit_stack;
+	libtwit_stack = malloc(sizeof(struct stack));
 }
 
-void libtwit_cleanup(*stack libtwit_stack)
+void libtwit_cleanup()
 {
 	destroy_resource_list(libtwit_stack->first_node);
 	free(libtwit_stack);

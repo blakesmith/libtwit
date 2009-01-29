@@ -29,6 +29,18 @@ struct tweet *create_tweet(struct tweet *previous_node)
 	return newTweet;
 }
 
+void destroy_tweets(struct tweet *current)
+{
+
+	while (current != NULL)
+	{
+		struct tweet *i = current->next;
+		free(current->user);
+		free(current);
+		current = i;
+	}
+}
+
 struct twitter_user *create_user()
 {
 	struct twitter_user *newUser;
@@ -92,7 +104,7 @@ int sanitize_string_bool(xmlChar *test_string)
 		return -1;
 }
 
-struct tweet *parse_user_timeline(stack *libtwit_stack, xmlNodePtr cur)
+struct tweet *parse_user_timeline(xmlNodePtr cur)
 {
 	xmlNodePtr children;
 	struct tweet *starting_tweet;
@@ -125,7 +137,7 @@ struct tweet *parse_user_timeline(stack *libtwit_stack, xmlNodePtr cur)
 			current_tweet->in_reply_to_screen_name = get_node_value(cur, "in_reply_to_screen_name");
 		}
 	}
-	libtwit_stack->add_tweet_list(libtwit_stack, starting_tweet);
+	libtwit_stack->add_tweet_list(starting_tweet);
 
 	return starting_tweet;
 }
@@ -238,14 +250,14 @@ int main(int argc, char *argv[])
 	xmlNodePtr cur;
 	struct tweet *starting_tweet;
 
-	stack *libtwit_stack = libtwit_init();
+	libtwit_init();
 
 	curl_handle = twitter_login(argv[1], argv[2]);
 	if (retrieve_xml_file(curl_handle, STATUS_URL, FRIENDS_TIMELINE))
 	{
 		doc = open_xml_file(FRIENDS_TIMELINE);
 		cur = xmlDocGetRootElement(doc);
-		starting_tweet = parse_user_timeline(libtwit_stack, cur);
+		starting_tweet = parse_user_timeline(cur);
 		display_tweets(starting_tweet);
 		destroy_tweets(starting_tweet);
 		xmlFreeDoc(doc);

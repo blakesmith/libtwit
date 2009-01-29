@@ -1,3 +1,6 @@
+#ifndef LIBTWIT_H
+#define LIBTWIT_H
+
 #include <time.h>
 
 struct twitter_user
@@ -29,3 +32,4 @@ struct tweet
 	struct twitter_user *user;
 };
 
+#endif
