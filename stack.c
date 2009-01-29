@@ -24,7 +24,8 @@ struct tweet *add_tweet_list(struct tweet *first_node)
 	else
 	{
 		libtwit_stack->first_node = current_resource;
-		libtwit_stack->first_node->next = NULL;
+		current_resource->next = NULL;
+		current_resource->prev = NULL;
 	}
 
 	libtwit_stack->current_node = current_resource;
