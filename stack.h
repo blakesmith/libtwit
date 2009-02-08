@@ -26,4 +26,8 @@ void destroy_tweets(struct tweet *current);
 
 void destroy_resource_list(struct resource_list *current_resource);
 
+void *libtwit_init();
+
+void libtwit_deinit();
+
 #endif

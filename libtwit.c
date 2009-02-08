@@ -280,17 +280,9 @@ struct tweet *parse_tweet_doc(char *tweet_doc)
 		return NULL;
 }
 
-int main(int argc, char *argv[])
+struct tweet *parse_user_timeline()
 {
-	struct tweet *tweets;
-
-	libtwit_init();
-
-	twitter_login(argv[1], argv[2]);
-	tweets = parse_tweet_doc(FRIENDS_TIMELINE);
-	display_tweets(tweets);
-
-	libtwit_deinit();
-
-	return 0;
+	struct tweet *user_timeline = parse_tweet_doc(FRIENDS_TIMELINE);
+	
+	return user_timeline;
 }

@@ -1,7 +1,10 @@
 #ifndef LIBTWIT_H
 #define LIBTWIT_H
 
+#include <libxml/parser.h>
 #include <time.h>
+
+#include "stack.h"
 
 struct twitter_user
 {
@@ -34,5 +37,13 @@ struct tweet
 
 char *libtwit_twitter_username;
 char *libtwit_twitter_password;
+
+void display_tweets(struct tweet *starting_tweet);
+
+struct tweet *parse_tweets(xmlNodePtr cur);
+
+struct tweet *parse_user_timeline();
+
+int twitter_login(char *username, char *password);
 
 #endif
