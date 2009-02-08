@@ -58,6 +58,11 @@ void *libtwit_init()
 
 void libtwit_deinit()
 {
+	extern char *libtwit_twitter_username;
+	extern char *libtwit_twitter_password;
+
 	destroy_resource_list(libtwit_stack->first_node);
 	free(libtwit_stack);
+	free(libtwit_twitter_username);
+	free(libtwit_twitter_password);
 }

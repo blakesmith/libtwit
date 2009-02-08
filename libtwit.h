@@ -32,4 +32,7 @@ struct tweet
 	struct twitter_user *user;
 };
 
+char *libtwit_twitter_username;
+char *libtwit_twitter_password;
+
 #endif

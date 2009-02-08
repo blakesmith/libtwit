@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <curl/curl.h>
@@ -110,7 +111,7 @@ int sanitize_string_bool(xmlChar *test_string)
 		return -1;
 }
 
-struct tweet *parse_user_timeline(xmlNodePtr cur)
+struct tweet *parse_tweets(xmlNodePtr cur)
 {
 	xmlNodePtr children;
 	struct tweet *starting_tweet;
@@ -201,30 +202,37 @@ void display_tweets(struct tweet *starting_tweet)
 
 int is_authenticated()
 {
-	return 1;	
+	extern char *libtwit_twitter_username;
+	extern char *libtwit_twitter_password;
+
+	if (libtwit_twitter_username && libtwit_twitter_password)
+		return 1;	
+	else
+		return 0;
 }
 
 
-CURL *twitter_login(char *username, char *password)
+int twitter_login(char *username, char *password)
 {
-	CURL *curl_handle;
 
-	curl_handle = curl_easy_init();
-
-	if (is_authenticated())
+	if (!is_authenticated())
 	{
-		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, username);
-		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, password);
+		libtwit_twitter_username = malloc(sizeof(char));
+		libtwit_twitter_password = malloc(sizeof(char));
 
-		return curl_handle;
+		strcpy(libtwit_twitter_username, username);
+		strcpy(libtwit_twitter_password, password);
+
+		return 1;
 	}
 	else
-		return NULL;
+		return 0;
 }
 		
-int retrieve_xml_file(CURL *curl_handle, char *url, char *file)
+int retrieve_xml_file(char *url, char *file)
 {
 	CURLcode success;
+	CURL *curl_handle;
 
 	FILE *fp;
 	fp = fopen(file, "w");
@@ -234,8 +242,11 @@ int retrieve_xml_file(CURL *curl_handle, char *url, char *file)
 		exit(0);
 	}
 
+	curl_handle = curl_easy_init();
 	if (curl_handle)
 	{
+		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
+		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
 		curl_easy_setopt(curl_handle, CURLOPT_URL, "http://twitter.com/statuses/friends_timeline.xml");
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
 		success = curl_easy_perform(curl_handle);
@@ -249,24 +260,36 @@ int retrieve_xml_file(CURL *curl_handle, char *url, char *file)
 		return 0;
 }
 
-int main(int argc, char *argv[])
+struct tweet *parse_tweet_doc(char *tweet_doc)
 {
-	CURL *curl_handle;
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	struct tweet *starting_tweet;
 
+	if (retrieve_xml_file(STATUS_URL, tweet_doc))
+	{
+		doc = open_xml_file(tweet_doc);
+		cur = xmlDocGetRootElement(doc);
+		starting_tweet = parse_tweets(cur);
+		xmlFreeDoc(doc);
+		display_tweets(starting_tweet);
+		
+		return starting_tweet;
+	}
+	else
+		return NULL;
+}
+
+int main(int argc, char *argv[])
+{
+	struct tweet *tweets;
+
 	libtwit_init();
 
-	curl_handle = twitter_login(argv[1], argv[2]);
-	if (retrieve_xml_file(curl_handle, STATUS_URL, FRIENDS_TIMELINE))
-	{
-		doc = open_xml_file(FRIENDS_TIMELINE);
-		cur = xmlDocGetRootElement(doc);
-		starting_tweet = parse_user_timeline(cur);
-		display_tweets(starting_tweet);
-		xmlFreeDoc(doc);
-	}
+	twitter_login(argv[1], argv[2]);
+	tweets = parse_tweet_doc(FRIENDS_TIMELINE);
+	display_tweets(tweets);
+
 	libtwit_deinit();
 
 	return 0;
