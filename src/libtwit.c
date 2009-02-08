@@ -143,6 +143,8 @@ struct tweet *parse_tweets(xmlNodePtr cur)
 			current_tweet->favorited = sanitize_string_bool(get_node_value(cur, "favorited"));
 			current_tweet->in_reply_to_screen_name = get_node_value(cur, "in_reply_to_screen_name");
 		}
+		else if ((!xmlStrcmp(cur->name, (const xmlChar *)"error")))
+			return NULL;
 	}
 	add_tweet_list(starting_tweet);
 
@@ -272,7 +274,6 @@ struct tweet *parse_tweet_doc(char *tweet_doc)
 		cur = xmlDocGetRootElement(doc);
 		starting_tweet = parse_tweets(cur);
 		xmlFreeDoc(doc);
-		display_tweets(starting_tweet);
 		
 		return starting_tweet;
 	}
