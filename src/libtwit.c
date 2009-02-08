@@ -177,7 +177,8 @@ void display_tweets(struct tweet *starting_tweet)
 			"\tprofile_image_url: %s\n"
 			"\turl: %s\n"
 			"\tprotected: %i\n"
-			"\tfollowers_count: %i\n",
+			"\tfollowers_count: %i\n"
+			"===================================\n",
 			
 			created_char,
 			i->id,
@@ -197,7 +198,6 @@ void display_tweets(struct tweet *starting_tweet)
 			i->user->url,
 			i->user->prot,
 			i->user->followers_count);
-		printf("===================================\n");
 	}
 }
 
