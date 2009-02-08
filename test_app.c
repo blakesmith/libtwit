@@ -1,4 +1,4 @@
-#include "libtwit.h"
+#include "src/libtwit.h"
 
 #include <stdio.h>
 #include <stdlib.h>
