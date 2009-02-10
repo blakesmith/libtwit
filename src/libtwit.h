@@ -44,6 +44,8 @@ struct tweet *parse_tweets(xmlNodePtr cur);
 
 struct tweet *parse_user_timeline();
 
+struct tweet *parse_friends_timeline();
+
 int twitter_login(char *username, char *password);
 
 #endif
