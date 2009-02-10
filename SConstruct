@@ -8,7 +8,7 @@ if conf.CheckLib('libxml2'):
 	conf.env.Append(CFLAGS = ['-I/usr/include/libxml2'])
 env = conf.Finish()
 
-libtwit = env.SharedLibrary('libtwit', ['src/stack.c', 'src/libtwit.c'])
+libtwit = env.SharedLibrary('libtwit', ['src/stack.c', 'src/core.c', 'src/status.c'])
 test_app = env.Program('test_app/test_app.c', LIBS=['libtwit'], LIBPATH=['.'])
 
 env.Install('/usr/local/bin', test_app)

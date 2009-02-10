@@ -1,4 +1,4 @@
-#include "../src/libtwit.h"
+#include "../src/status.h"
 
 #include <stdio.h>
 #include <stdlib.h>

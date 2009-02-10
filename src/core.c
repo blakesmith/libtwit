@@ -5,14 +5,8 @@
 #include <curl/curl.h>
 #include <libxml/parser.h>
 
-#include "libtwit.h"
+#include "core.h"
 #include "stack.h"
-
-#define FRIENDS_TIMELINE "friends_timeline.xml"
-#define USER_TIMELINE "user_timeline.xml"
-#define STATUS_URL "http://twitter.com/statuses/"
-
-#define SLENGTH 255
 
 xmlDocPtr open_xml_file(char *file)
 {
@@ -285,16 +279,3 @@ struct tweet *parse_tweet_doc(char *tweet_doc)
 		return NULL;
 }
 
-struct tweet *parse_friends_timeline()
-{
-	struct tweet *user_timeline = parse_tweet_doc(FRIENDS_TIMELINE);
-	
-	return user_timeline;
-}
-
-struct tweet *parse_user_timeline()
-{
-	struct tweet *user_timeline = parse_tweet_doc(USER_TIMELINE);
-	
-	return user_timeline;
-}

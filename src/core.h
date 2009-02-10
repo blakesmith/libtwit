@@ -1,10 +1,14 @@
-#ifndef LIBTWIT_H
-#define LIBTWIT_H
-
 #include <libxml/parser.h>
 #include <time.h>
 
 #include "stack.h"
+
+#define FRIENDS_TIMELINE "friends_timeline.xml"
+#define USER_TIMELINE "user_timeline.xml"
+#define STATUS_URL "http://twitter.com/statuses/"
+
+#define SLENGTH 255
+
 
 struct twitter_user
 {
@@ -42,10 +46,7 @@ void display_tweets(struct tweet *starting_tweet);
 
 struct tweet *parse_tweets(xmlNodePtr cur);
 
-struct tweet *parse_user_timeline();
-
-struct tweet *parse_friends_timeline();
+struct tweet *parse_tweet_doc();
 
 int twitter_login(char *username, char *password);
 
-#endif
