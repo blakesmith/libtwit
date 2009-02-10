@@ -236,6 +236,10 @@ int retrieve_xml_file(char *url, char *file)
 	CURLcode success;
 	CURL *curl_handle;
 
+	char build_url[SLENGTH];
+	strcat(build_url, url);
+	strcat(build_url, file);
+
 	FILE *fp;
 	fp = fopen(file, "w");
 	if (fp == NULL)
@@ -249,7 +253,7 @@ int retrieve_xml_file(char *url, char *file)
 	{
 		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
 		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
-		curl_easy_setopt(curl_handle, CURLOPT_URL, "http://twitter.com/statuses/friends_timeline.xml");
+		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
 		success = curl_easy_perform(curl_handle);
 
