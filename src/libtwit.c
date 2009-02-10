@@ -219,8 +219,8 @@ int twitter_login(char *username, char *password)
 
 	if (!is_authenticated())
 	{
-		libtwit_twitter_username = malloc(sizeof(char));
-		libtwit_twitter_password = malloc(sizeof(char));
+		libtwit_twitter_username = malloc(SLENGTH);
+		libtwit_twitter_password = malloc(SLENGTH);
 
 		strcpy(libtwit_twitter_username, username);
 		strcpy(libtwit_twitter_password, password);
