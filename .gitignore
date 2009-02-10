@@ -1,0 +1,7 @@
+*.xml
+*.os
+*.so
+*.o
+test_app
+.scon*
+config.log
