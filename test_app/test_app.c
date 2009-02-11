@@ -5,21 +5,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-void parse_action(char *arg)
+void parse_action(char *arg[])
 {
 	int success;
 
-	if (strcmp(arg, "user") == 0)
+	if (strcmp(arg[1], "user") == 0)
 	{
 		handle_tweets(parse_user_timeline());
 	}
-	else if (strcmp(arg, "friends") == 0)
+	else if (strcmp(arg[1], "friends") == 0)
 	{
 		handle_tweets(parse_friends_timeline());
 	}
-	else if (strcmp(arg, "update") == 0)
+	else if (strcmp(arg[1], "update") == 0)
 	{
-		success = send_update("Testing libtwit.");
+		success = send_update(arg[4]);
 		if (success)
 			printf("Update sent.\n");
 		else
@@ -36,6 +36,7 @@ void display_usage()
 {
 	printf("Usage: test_app ACTION <twitter_login> <twitter_password>\n"
 		"Valid actions:\n"			
+		"\tupdate <message>\n"
 		"\tuser\n"
 		"\tfriends\n"
 		);
@@ -59,12 +60,12 @@ int main(int argc, char *argv[])
 
 	libtwit_init();
 
-	if (!(argc == 4))
+	if ((argc < 4))
 	{
 		display_usage();
 	}
 	twitter_login(argv[2], argv[3]);
-	parse_action(argv[1]);
+	parse_action(argv);
 
 	libtwit_deinit();
 

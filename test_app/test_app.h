@@ -1,5 +1,5 @@
 
-void parse_action(char *arg);
+void parse_action(char *arg[]);
 
 void display_usage();
 
