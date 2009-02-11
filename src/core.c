@@ -224,6 +224,41 @@ int twitter_login(char *username, char *password)
 	else
 		return 0;
 }
+
+int send_post_update(char *url, char *file, char *in_message)
+{
+	CURLcode success;
+	CURL *curl_handle;
+	struct curl_httppost *message = NULL;
+	struct curl_httppost *last = NULL;
+	struct curl_slist *slist = NULL;
+
+	char build_url[SLENGTH];
+	strcat(build_url, url);
+	strcat(build_url, file);
+
+	curl_formadd(&message, &last, CURLFORM_COPYNAME, "status", CURLFORM_COPYCONTENTS, in_message, CURLFORM_END);
+	slist = curl_slist_append(slist, "Expect:");
+
+	curl_handle = curl_easy_init();
+	
+	if (curl_handle)
+	{
+		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
+		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
+		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
+		curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, message);
+		curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, slist);
+		success = curl_easy_perform(curl_handle);
+
+		curl_easy_cleanup(curl_handle);
+		curl_formfree(message);
+	}
+	if (!success)
+		return 1;
+	else
+		return 0;
+}
 		
 int retrieve_xml_file(char *url, char *file)
 {

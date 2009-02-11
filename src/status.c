@@ -14,3 +14,14 @@ struct tweet *parse_user_timeline()
 	
 	return user_timeline;
 }
+
+int send_update(char *message)
+{
+	int success;
+
+	success = send_post_update(STATUS_URL, UPDATE, message);
+	if (success)
+		return 1;
+	else
+		return 0;
+}

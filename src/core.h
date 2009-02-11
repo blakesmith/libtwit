@@ -5,6 +5,7 @@
 
 #define FRIENDS_TIMELINE "friends_timeline.xml"
 #define USER_TIMELINE "user_timeline.xml"
+#define UPDATE "update.xml"
 #define STATUS_URL "http://twitter.com/statuses/"
 
 #define SLENGTH 255
@@ -47,6 +48,8 @@ void display_tweets(struct tweet *starting_tweet);
 struct tweet *parse_tweets(xmlNodePtr cur);
 
 struct tweet *parse_tweet_doc();
+
+int send_post_update(char *url, char *file, char *in_message);
 
 int twitter_login(char *username, char *password);
 

@@ -5,27 +5,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct tweet *parse_action(char *arg)
+void parse_action(char *arg)
 {
-	struct tweet *tweets = NULL;
+	int success;
 
 	if (strcmp(arg, "user") == 0)
 	{
-		tweets = parse_user_timeline();
+		handle_tweets(parse_user_timeline());
 	}
 	else if (strcmp(arg, "friends") == 0)
 	{
-		tweets = parse_friends_timeline();
+		handle_tweets(parse_friends_timeline());
+	}
+	else if (strcmp(arg, "update") == 0)
+	{
+		success = send_update("Testing libtwit.");
+		if (success)
+			printf("Update sent.\n");
+		else
+			printf("Failed to post update.\n");
 	}
 	else
 	{
 		display_usage();
 	}
 
-	if (tweets)
-		return tweets;
-	else
-		return NULL;
 }
 
 void display_usage()
@@ -36,6 +40,17 @@ void display_usage()
 		"\tfriends\n"
 		);
 	exit(0);
+}
+
+void handle_tweets(struct tweet *first_tweet)
+{
+	if (first_tweet == NULL)
+	{
+		printf("Failed to retrieve timeline. Did you type your login information correctly?\n");
+		exit(0);
+	}
+	else
+		display_tweets(first_tweet);
 }
 
 int main(int argc, char *argv[])
@@ -49,13 +64,7 @@ int main(int argc, char *argv[])
 		display_usage();
 	}
 	twitter_login(argv[2], argv[3]);
-	tweets = parse_action(argv[1]);
-	if (tweets == NULL)
-	{
-		printf("Failed to retrieve timeline. Did you type your login information correctly?\n");
-		exit(0);
-	}
-	display_tweets(tweets);
+	parse_action(argv[1]);
 
 	libtwit_deinit();
 
