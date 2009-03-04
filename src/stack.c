@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+	
 #include "stack.h"
+
+struct stack *libtwit_stack;
 
 struct tweet *add_tweet_list(struct tweet *first_node)
 {
-	extern struct stack *libtwit_stack;
 	struct resource_list *current_resource = malloc(sizeof(struct resource_list));
 
 	if (current_resource == NULL)

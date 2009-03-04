@@ -18,7 +18,7 @@ struct stack
 
 };
 
-struct stack *libtwit_stack;
+extern struct stack *libtwit_stack;
 
 struct tweet *add_tweet_list(struct tweet *first_node);
 
