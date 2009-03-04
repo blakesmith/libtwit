@@ -40,6 +40,12 @@ struct tweet
 	struct twitter_user *user;
 };
 
+struct xml_memory
+{
+	char *memory;
+	size_t size;
+};
+
 char *libtwit_twitter_username;
 char *libtwit_twitter_password;
 
@@ -53,3 +59,5 @@ int send_post_update(char *url, char *file, char *in_message);
 
 int twitter_login(char *username, char *password);
 
+static size_t
+xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);

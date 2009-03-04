@@ -8,10 +8,10 @@
 #include "core.h"
 #include "stack.h"
 
-xmlDocPtr open_xml_file(char *file)
+xmlDocPtr open_xml_file(struct xml_memory *mem)
 {
 	xmlDocPtr doc;
-	doc = xmlReadFile(file, NULL, XML_PARSE_NOBLANKS);	
+	doc = xmlReadMemory(mem->memory, mem->size, "noname", NULL, XML_PARSE_NOBLANKS);	
 	return doc;
 }
 
@@ -259,40 +259,48 @@ int send_post_update(char *url, char *file, char *in_message)
 	else
 		return 0;
 }
-		
-int retrieve_xml_file(char *url, char *file)
+
+static size_t
+xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
+{
+	size_t realsize = size *nmemb;
+	struct xml_memory *mem = (struct xml_memory *)data;
+
+	mem->memory = realloc(mem->memory, mem->size + realsize + 1);
+	if (mem->memory) {
+		memcpy(&(mem->memory[mem->size]), ptr, realsize);
+		mem->size += realsize;
+		mem->memory[mem->size] = 0;
+	}
+	return realsize;
+}
+
+struct xml_memory *retrieve_xml_file(char *file)
 {
 	CURLcode success;
 	CURL *curl_handle;
+	struct xml_memory *mem = malloc(sizeof(struct xml_memory));
 
 	char build_url[SLENGTH];
-	strcat(build_url, url);
+	strcat(build_url, STATUS_URL);
 	strcat(build_url, file);
-
-	FILE *fp;
-	fp = fopen(file, "w");
-	if (fp == NULL)
-	{
-		printf("Couldn't open a file for writing, exiting...");
-		exit(0);
-	}
 
 	curl_handle = curl_easy_init();
 	if (curl_handle)
 	{
 		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
 		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
+		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
+		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&mem);
 		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
 		success = curl_easy_perform(curl_handle);
 
 		curl_easy_cleanup(curl_handle);
-		fclose(fp);
 	}
 	if (!success)
-		return 1;
+		return mem;
 	else
-		return 0;
+		return NULL;
 }
 
 struct tweet *parse_tweet_doc(char *tweet_doc)
@@ -300,13 +308,16 @@ struct tweet *parse_tweet_doc(char *tweet_doc)
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	struct tweet *starting_tweet;
+	struct xml_memory *mem;
+	mem = retrieve_xml_file(tweet_doc);
 
-	if (retrieve_xml_file(STATUS_URL, tweet_doc))
+	if (mem)
 	{
-		doc = open_xml_file(tweet_doc);
+		doc = open_xml_file(mem);
 		cur = xmlDocGetRootElement(doc);
 		starting_tweet = parse_tweets(cur);
 		xmlFreeDoc(doc);
+		free(mem);
 		
 		return starting_tweet;
 	}
