@@ -112,6 +112,9 @@ struct tweet *parse_tweets(xmlNodePtr cur)
 	struct tweet *current_tweet = NULL;
 	struct tweet *previous_tweet = NULL;
 
+	if (cur == NULL)
+		exit(0);
+
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next)
 	{
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
@@ -291,7 +294,7 @@ struct xml_memory *retrieve_xml_file(char *file)
 		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
 		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&mem);
+		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)mem);
 		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
 		success = curl_easy_perform(curl_handle);
 
