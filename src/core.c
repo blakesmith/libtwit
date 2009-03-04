@@ -268,7 +268,7 @@ send_post_update(char *url, char *file, char *in_message)
 static size_t
 xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 {
-	size_t realsize = size *nmemb;
+	size_t realsize = size * nmemb;
 	struct xml_memory *mem = (struct xml_memory *)data;
 
 	mem->memory = realloc(mem->memory, mem->size + realsize + 1);
