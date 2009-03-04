@@ -3,7 +3,8 @@
 
 #include <string.h>
 
-int check_update_length(char *message)
+int 
+check_update_length(char *message)
 {
 	if (strlen(message) > 140)
 		return 0;
@@ -11,21 +12,24 @@ int check_update_length(char *message)
 		return 1;
 }
 
-struct tweet *parse_friends_timeline()
+struct tweet 
+*parse_friends_timeline()
 {
 	struct tweet *user_timeline = parse_tweet_doc(FRIENDS_TIMELINE);
 	
 	return user_timeline;
 }
 
-struct tweet *parse_user_timeline()
+struct tweet 
+*parse_user_timeline()
 {
 	struct tweet *user_timeline = parse_tweet_doc(USER_TIMELINE);
 	
 	return user_timeline;
 }
 
-int send_update(char *message)
+int 
+send_update(char *message)
 {
 	int success;
 

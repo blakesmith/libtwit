@@ -8,14 +8,16 @@
 #include "core.h"
 #include "stack.h"
 
-xmlDocPtr open_xml_file(struct xml_memory *mem)
+xmlDocPtr 
+open_xml_file(struct xml_memory *mem)
 {
 	xmlDocPtr doc;
 	doc = xmlReadMemory(mem->memory, mem->size, "noname", NULL, XML_PARSE_NOBLANKS);	
 	return doc;
 }
 
-struct tweet *create_tweet(struct tweet *previous_node)
+struct tweet 
+*create_tweet(struct tweet *previous_node)
 {
 	struct tweet *newTweet;
 	newTweet = malloc(sizeof(struct tweet));
@@ -29,7 +31,8 @@ struct tweet *create_tweet(struct tweet *previous_node)
 	return newTweet;
 }
 
-void destroy_tweets(struct tweet *current)
+void 
+destroy_tweets(struct tweet *current)
 {
 
 	while (current != NULL) {
@@ -40,7 +43,8 @@ void destroy_tweets(struct tweet *current)
 	}
 }
 
-struct twitter_user *create_user()
+struct twitter_user 
+*create_user()
 {
 	struct twitter_user *newUser;
 	newUser = malloc(sizeof(struct twitter_user));
@@ -48,7 +52,8 @@ struct twitter_user *create_user()
 	return newUser;
 }
 
-xmlChar *get_node_value(xmlNodePtr parent, char *search_string)
+xmlChar 
+*get_node_value(xmlNodePtr parent, char *search_string)
 {
 	xmlChar *value;
 
@@ -60,7 +65,8 @@ xmlChar *get_node_value(xmlNodePtr parent, char *search_string)
 	}
 }
 
-xmlNodePtr get_node_ptr(xmlNodePtr parent, char *search_string)
+xmlNodePtr 
+get_node_ptr(xmlNodePtr parent, char *search_string)
 {
 	for (parent = parent->children; parent != NULL; parent = parent->next) {
 		if ((!xmlStrcmp(parent->name, (const xmlChar *) search_string))) {
@@ -69,7 +75,8 @@ xmlNodePtr get_node_ptr(xmlNodePtr parent, char *search_string)
 	}
 }
 
-struct twitter_user *get_user_data(xmlNodePtr parent)
+struct twitter_user 
+*get_user_data(xmlNodePtr parent)
 {
 	struct twitter_user *new_user = create_user();
 
@@ -87,7 +94,8 @@ struct twitter_user *get_user_data(xmlNodePtr parent)
 }
 
 
-int sanitize_string_bool(xmlChar *test_string)
+int 
+sanitize_string_bool(xmlChar *test_string)
 {
 	if ((!xmlStrcmp(test_string, (const xmlChar *) "false")))
 		return 0;
@@ -99,7 +107,8 @@ int sanitize_string_bool(xmlChar *test_string)
 		return -1;
 }
 
-struct tweet *parse_tweets(xmlNodePtr cur)
+struct tweet 
+*parse_tweets(xmlNodePtr cur)
 {
 	xmlNodePtr children;
 	struct tweet *starting_tweet;
@@ -140,7 +149,8 @@ struct tweet *parse_tweets(xmlNodePtr cur)
 	return starting_tweet;
 }
 
-void display_tweets(struct tweet *starting_tweet)
+void 
+display_tweets(struct tweet *starting_tweet)
 {
 	struct tweet *i;
 
@@ -190,7 +200,8 @@ void display_tweets(struct tweet *starting_tweet)
 }
 
 
-int is_authenticated()
+int 
+is_authenticated()
 {
 	extern char *libtwit_twitter_username;
 	extern char *libtwit_twitter_password;
@@ -202,7 +213,8 @@ int is_authenticated()
 }
 
 
-int twitter_login(char *username, char *password)
+int 
+twitter_login(char *username, char *password)
 {
 
 	if (!is_authenticated()) {
@@ -218,7 +230,8 @@ int twitter_login(char *username, char *password)
 		return 0;
 }
 
-int send_post_update(char *url, char *file, char *in_message)
+int 
+send_post_update(char *url, char *file, char *in_message)
 {
 	CURLcode success;
 	CURL *curl_handle;
@@ -267,7 +280,8 @@ xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 	return realsize;
 }
 
-struct xml_memory *retrieve_xml_file(char *file)
+struct 
+xml_memory *retrieve_xml_file(char *file)
 {
 	CURLcode success;
 	CURL *curl_handle;
@@ -294,7 +308,8 @@ struct xml_memory *retrieve_xml_file(char *file)
 		return NULL;
 }
 
-struct tweet *parse_tweet_doc(char *tweet_doc)
+struct tweet 
+*parse_tweet_doc(char *tweet_doc)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur;

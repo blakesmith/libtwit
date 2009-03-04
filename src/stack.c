@@ -6,7 +6,8 @@
 
 struct stack *libtwit_stack;
 
-struct tweet *add_tweet_list(struct tweet *first_node)
+struct tweet 
+*add_tweet_list(struct tweet *first_node)
 {
 	struct resource_list *current_resource = malloc(sizeof(struct resource_list));
 
@@ -32,7 +33,8 @@ struct tweet *add_tweet_list(struct tweet *first_node)
 	return current_resource->first_node;
 }
 
-void destroy_resource_list(struct resource_list *current_resource)
+void 
+destroy_resource_list(struct resource_list *current_resource)
 {
 
 	while (current_resource != NULL) {
@@ -43,7 +45,8 @@ void destroy_resource_list(struct resource_list *current_resource)
 	}
 }
 
-void *libtwit_init()
+void 
+*libtwit_init()
 {
 	libtwit_stack = malloc(sizeof(struct stack));
 
@@ -53,7 +56,8 @@ void *libtwit_init()
 	}
 }
 
-void libtwit_deinit()
+void 
+libtwit_deinit()
 {
 	extern char *libtwit_twitter_username;
 	extern char *libtwit_twitter_password;

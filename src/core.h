@@ -59,5 +59,4 @@ int send_post_update(char *url, char *file, char *in_message);
 
 int twitter_login(char *username, char *password);
 
-static size_t
-xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);
+static size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);
