@@ -203,9 +203,6 @@ display_tweets(struct tweet *starting_tweet)
 int 
 is_authenticated()
 {
-	extern char *libtwit_twitter_username;
-	extern char *libtwit_twitter_password;
-
 	if (libtwit_twitter_username && libtwit_twitter_password)
 		return 1;	
 	else
@@ -218,13 +215,34 @@ twitter_login(char *username, char *password)
 {
 
 	if (!is_authenticated()) {
-		libtwit_twitter_username = malloc(SLENGTH);
-		libtwit_twitter_password = malloc(SLENGTH);
+		CURL *curl_handle;
+		CURLcode success;
 
-		strncpy(libtwit_twitter_username, username, SLENGTH);
-		strncpy(libtwit_twitter_password, password, SLENGTH);
+		char build_url[SLENGTH];
+		strcat(build_url, ACCOUNT_URL);
+		strcat(build_url, VERIFY_CREDENTIALS);
 
-		return 1;
+		curl_handle = curl_easy_init();
+
+		if (curl_handle) {
+			curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
+			curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
+			curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
+			curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, "true");
+			success = curl_easy_perform(curl_handle);
+			curl_easy_cleanup(curl_handle);
+		}
+		if (success == CURLE_HTTP_RETURNED_ERROR)
+			return 0;
+		else {
+			libtwit_twitter_username = malloc(SLENGTH);
+			libtwit_twitter_password = malloc(SLENGTH);
+
+			strncpy(libtwit_twitter_username, username, SLENGTH);
+			strncpy(libtwit_twitter_password, password, SLENGTH);
+
+			return 1;
+		}
 	}
 	else
 		return 0;

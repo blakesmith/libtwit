@@ -64,7 +64,10 @@ int main(int argc, char *argv[])
 	{
 		display_usage();
 	}
-	twitter_login(argv[2], argv[3]);
+	if (!twitter_login(argv[2], argv[3])) {
+		printf("Error logging in. Are your credentials correct?");
+		exit(0);
+	}
 	parse_action(argv);
 
 	libtwit_deinit();

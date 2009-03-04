@@ -6,7 +6,9 @@
 #define FRIENDS_TIMELINE "friends_timeline.xml"
 #define USER_TIMELINE "user_timeline.xml"
 #define UPDATE "update.xml"
+#define VERIFY_CREDENTIALS "verify_credentials.xml"
 #define STATUS_URL "http://twitter.com/statuses/"
+#define ACCOUNT_URL "http://twitter.com/account/"
 
 #define SLENGTH 255
 
