@@ -46,8 +46,8 @@ struct xml_memory
 	size_t size;
 };
 
-char *libtwit_twitter_username;
-char *libtwit_twitter_password;
+extern char *libtwit_twitter_username;
+extern char *libtwit_twitter_password;
 
 void display_tweets(struct tweet *starting_tweet);
 

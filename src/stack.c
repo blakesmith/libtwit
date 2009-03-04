@@ -5,6 +5,8 @@
 #include "stack.h"
 
 struct stack *libtwit_stack;
+char *libtwit_twitter_username;
+char *libtwit_twitter_password;
 
 struct tweet 
 *add_tweet_list(struct tweet *first_node)
@@ -59,9 +61,6 @@ void
 void 
 libtwit_deinit()
 {
-	extern char *libtwit_twitter_username;
-	extern char *libtwit_twitter_password;
-
 	destroy_resource_list(libtwit_stack->first_node);
 	free(libtwit_stack);
 	free(libtwit_twitter_username);
