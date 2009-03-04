@@ -10,21 +10,18 @@ struct tweet *add_tweet_list(struct tweet *first_node)
 {
 	struct resource_list *current_resource = malloc(sizeof(struct resource_list));
 
-	if (current_resource == NULL)
-	{
+	if (current_resource == NULL) {
 		printf("Out of memory, dying...");
 		exit(0);
 	}
 
 	current_resource->first_node = first_node;
 
-	if (libtwit_stack->current_node != NULL)
-	{
+	if (libtwit_stack->current_node != NULL) {
 		current_resource->prev = libtwit_stack->current_node;
 		libtwit_stack->current_node->next = current_resource;
 	}
-	else
-	{
+	else {
 		libtwit_stack->first_node = current_resource;
 		current_resource->next = NULL;
 		current_resource->prev = NULL;
@@ -38,8 +35,7 @@ struct tweet *add_tweet_list(struct tweet *first_node)
 void destroy_resource_list(struct resource_list *current_resource)
 {
 
-	while (current_resource != NULL)
-	{
+	while (current_resource != NULL) {
 		struct resource_list *resource_i = current_resource->next;
 		destroy_tweets(current_resource->first_node);
 		free(current_resource);
@@ -51,8 +47,7 @@ void *libtwit_init()
 {
 	libtwit_stack = malloc(sizeof(struct stack));
 
-	if (libtwit_stack == NULL)
-	{
+	if (libtwit_stack == NULL) {
 		printf("Out of memory, dying...");
 		exit(0);
 	}

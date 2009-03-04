@@ -20,8 +20,7 @@ struct tweet *create_tweet(struct tweet *previous_node)
 	struct tweet *newTweet;
 	newTweet = malloc(sizeof(struct tweet));
 
-	if (newTweet == NULL)
-	{
+	if (newTweet == NULL) {
 		printf("Out of memory, dying...");
 		exit(0);
 	}
@@ -33,8 +32,7 @@ struct tweet *create_tweet(struct tweet *previous_node)
 void destroy_tweets(struct tweet *current)
 {
 
-	while (current != NULL)
-	{
+	while (current != NULL) {
 		struct tweet *i = current->next;
 		free(current->user);
 		free(current);
@@ -54,10 +52,8 @@ xmlChar *get_node_value(xmlNodePtr parent, char *search_string)
 {
 	xmlChar *value;
 
-	for (parent = parent->children; parent != NULL; parent = parent->next)
-	{
-		if ((!xmlStrcmp(parent->name, (const xmlChar *) search_string)))
-		{
+	for (parent = parent->children; parent != NULL; parent = parent->next) {
+		if ((!xmlStrcmp(parent->name, (const xmlChar *) search_string))) {
 			value = xmlNodeGetContent(parent);
 			return value;
 		}
@@ -66,10 +62,8 @@ xmlChar *get_node_value(xmlNodePtr parent, char *search_string)
 
 xmlNodePtr get_node_ptr(xmlNodePtr parent, char *search_string)
 {
-	for (parent = parent->children; parent != NULL; parent = parent->next)
-	{
-		if ((!xmlStrcmp(parent->name, (const xmlChar *) search_string)))
-		{
+	for (parent = parent->children; parent != NULL; parent = parent->next) {
+		if ((!xmlStrcmp(parent->name, (const xmlChar *) search_string))) {
 			return parent;
 		}
 	}
@@ -115,10 +109,8 @@ struct tweet *parse_tweets(xmlNodePtr cur)
 	if (cur == NULL)
 		exit(0);
 
-	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next)
-	{
-		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status")))
-		{
+	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
+		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
 			previous_tweet = current_tweet; /* First loop this is NULL */
 			current_tweet = create_tweet(previous_tweet);
 
@@ -152,8 +144,7 @@ void display_tweets(struct tweet *starting_tweet)
 {
 	struct tweet *i;
 
-	for (i = starting_tweet; i != NULL; i = i->next)
-	{
+	for (i = starting_tweet; i != NULL; i = i->next) {
 		char created_char[SLENGTH];
 		strftime(created_char, SLENGTH, "%a %b %d %H:%M:%S %Y", &(i->created_at));
 		printf("created_at: %s\n"
@@ -214,8 +205,7 @@ int is_authenticated()
 int twitter_login(char *username, char *password)
 {
 
-	if (!is_authenticated())
-	{
+	if (!is_authenticated()) {
 		libtwit_twitter_username = malloc(SLENGTH);
 		libtwit_twitter_password = malloc(SLENGTH);
 
@@ -245,8 +235,7 @@ int send_post_update(char *url, char *file, char *in_message)
 
 	curl_handle = curl_easy_init();
 	
-	if (curl_handle)
-	{
+	if (curl_handle) {
 		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
 		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
 		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
@@ -289,8 +278,7 @@ struct xml_memory *retrieve_xml_file(char *file)
 	strcat(build_url, file);
 
 	curl_handle = curl_easy_init();
-	if (curl_handle)
-	{
+	if (curl_handle) {
 		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
 		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
@@ -314,8 +302,7 @@ struct tweet *parse_tweet_doc(char *tweet_doc)
 	struct xml_memory *mem;
 	mem = retrieve_xml_file(tweet_doc);
 
-	if (mem)
-	{
+	if (mem) {
 		doc = open_xml_file(mem);
 		cur = xmlDocGetRootElement(doc);
 		starting_tweet = parse_tweets(cur);

@@ -29,8 +29,7 @@ int send_update(char *message)
 {
 	int success;
 
-	if (check_update_length(message))
-	{
+	if (check_update_length(message)) {
 		success = send_post_update(STATUS_URL, UPDATE, message);
 		if (success)
 			return 1;
