@@ -50,6 +50,7 @@ destroy_resource_list(struct resource_list *current_resource)
 void 
 *libtwit_init()
 {
+	curl_global_init();
 	libtwit_stack = malloc(sizeof(struct stack));
 
 	if (libtwit_stack == NULL) {

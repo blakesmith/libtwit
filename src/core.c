@@ -115,8 +115,10 @@ struct tweet
 	struct tweet *current_tweet = NULL;
 	struct tweet *previous_tweet = NULL;
 
-	if (cur == NULL)
+	if (cur == NULL) {
+		printf("No tweets to parse!\n");
 		exit(0);
+	}
 
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
@@ -225,8 +227,9 @@ twitter_login(char *username, char *password)
 		curl_handle = curl_easy_init();
 
 		if (curl_handle) {
-			curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
-			curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
+			curl_easy_setopt(curl_handle, CURLOPT_USERNAME, username);
+			curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, password);
+			curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, empty_callback);
 			curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
 			curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, "true");
 			success = curl_easy_perform(curl_handle);
@@ -298,6 +301,15 @@ xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 	return realsize;
 }
 
+/**
+ * There must be a more sane way to do this with libcurl, but I couldn't seem to find a way to supress all data writing.
+ */
+static size_t
+empty_callback(void *ptr, size_t size, size_t nmemb, void *data)
+{
+	return 0;
+}
+
 struct 
 xml_memory *retrieve_xml_file(char *file)
 {
@@ -320,8 +332,10 @@ xml_memory *retrieve_xml_file(char *file)
 
 		curl_easy_cleanup(curl_handle);
 	}
-	if (!success)
+	if (!success) {
+		printf("Successful login!\n");
 		return mem;
+	}
 	else
 		return NULL;
 }
