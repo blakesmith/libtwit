@@ -12,7 +12,7 @@ xmlDocPtr
 open_xml_file(struct xml_memory *mem)
 {
 	xmlDocPtr doc;
-	doc = xmlReadMemory(mem->memory, mem->size, "noname", NULL, XML_PARSE_NOBLANKS);	
+	doc = xmlReadMemory(mem->memory, (int)mem->size, "noname", NULL, XML_PARSE_NOBLANKS);	
 	return doc;
 }
 
@@ -316,6 +316,9 @@ xml_memory *retrieve_xml_file(char *file)
 	CURLcode success;
 	CURL *curl_handle;
 	struct xml_memory *mem = malloc(sizeof(struct xml_memory));
+
+	mem->memory = NULL;
+	mem->size = 0;
 
 	char build_url[SLENGTH];
 	strcat(build_url, STATUS_URL);
