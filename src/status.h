@@ -1,3 +1,4 @@
+int check_update_length(char *message);
 
 struct tweet *parse_friends_timeline();
 

@@ -6,6 +6,7 @@
 #include <libxml/parser.h>
 
 #include "core.h"
+#include "status.h"
 
 char *libtwit_twitter_username;
 char *libtwit_twitter_password;
@@ -272,6 +273,8 @@ twitter_login(char *username, char *password)
 int 
 send_post_update(char *url, char *file, char *in_message)
 {
+	if (!check_update_length(in_message)) /* Is the message longer than 140 characters? */
+		return 0;
 	CURLcode success;
 	CURL *curl_handle;
 	struct curl_httppost *message = NULL;
