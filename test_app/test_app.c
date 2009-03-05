@@ -16,7 +16,6 @@ void parse_action(char *arg[])
 	else if (strcmp(arg[1], "friends") == 0)
 	{
 		handle_tweets(parse_friends_timeline());
-		handle_tweets(parse_user_timeline());
 	}
 	else if (strcmp(arg[1], "update") == 0)
 	{
