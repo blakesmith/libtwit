@@ -256,13 +256,13 @@ twitter_login(char *username, char *password)
 			strncpy(libtwit_twitter_username, username, SLENGTH);
 			strncpy(libtwit_twitter_password, password, SLENGTH);
 
-			return 1;
+			return LIBTWIT_OK;
 		}
 		else
-			return 0; /* User probably typed in the wrong login info. */
+			return LIBTWIT_CREDENTIAL_ERROR; /* User probably typed in the wrong login info. */
 	}
 	else
-		return 1;
+		return LIBTWIT_OK;
 }
 
 int 
@@ -300,9 +300,9 @@ send_post_update(char *url, char *file, char *in_message)
 	}
 	free(mem);
 	if (libtwit_curl_code == CURLE_OK)
-		return 1;
+		return LIBTWIT_OK;
 	else
-		return 0;
+		return libtwit_curl_code;
 }
 
 static size_t

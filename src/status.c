@@ -7,9 +7,9 @@ int
 check_update_length(char *message)
 {
 	if (strlen(message) > 140)
-		return 0;
+		return LIBTWIT_MESSAGE_TOO_LONG;
 	else
-		return 1;
+		return LIBTWIT_OK;
 }
 
 struct tweet 
@@ -33,13 +33,13 @@ send_update(char *message)
 {
 	int success;
 
-	if (check_update_length(message)) {
+	if (check_update_length(message) == LIBTWIT_MESSAGE_TOO_LONG) 
+		return LIBTWIT_MESSAGE_TOO_LONG;
+	else {
 		success = send_post_update(STATUS_URL, UPDATE, message);
-		if (success)
-			return 1;
+		if (success == LIBTWIT_OK)
+			return LIBTWIT_OK;
 		else
-			return 0;
+			return LIBTWIT_TRANSMISSION_ERROR;
 	}
-	else
-		return 0;
 }

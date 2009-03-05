@@ -1,3 +1,5 @@
+#ifndef LIBTWIT_CORE_H
+#define LIBTWIT_CORE_H
 #include <libxml/parser.h>
 #include <curl/curl.h>
 #include <time.h>
@@ -10,6 +12,18 @@
 #define ACCOUNT_URL "http://twitter.com/account/"
 
 #define SLENGTH 254
+
+extern enum {
+	/**
+	 * Start our twitter return codes at 200 so we can use them from
+	 * functions that may return a CURLcode as well as an internal 
+	 * libtwit code.
+	 */
+	LIBTWIT_OK = 200,
+	LIBTWIT_CREDENTIAL_ERROR,
+	LIBTWIT_MESSAGE_TOO_LONG,
+	LIBTWIT_TRANSMISSION_ERROR,
+} libtwit_code;
 
 
 struct twitter_user
@@ -71,3 +85,4 @@ int twitter_login(char *username, char *password);
 static size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);
 
 static size_t empty_callback(void *ptr, size_t size, size_t nmemb, void *data);
+#endif
