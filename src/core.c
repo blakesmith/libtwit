@@ -33,6 +33,7 @@ libtwit_deinit()
 {
 	free(libtwit_twitter_username);
 	free(libtwit_twitter_password);
+	curl_global_cleanup();
 }
 
 xmlDocPtr 
@@ -228,13 +229,15 @@ is_authenticated()
 int 
 twitter_login(char *username, char *password)
 {
-
 	if (!is_authenticated()) {
 		CURL *curl_handle;
 		CURLcode success;
+		struct xml_memory *mem = malloc(sizeof(struct xml_memory));
 
-		char build_url[SLENGTH];
-		strcat(build_url, ACCOUNT_URL);
+		mem->memory = NULL;
+		mem->size = 0;
+
+		char build_url[SLENGTH] = ACCOUNT_URL;
 		strcat(build_url, VERIFY_CREDENTIALS);
 
 		curl_handle = curl_easy_init();
@@ -242,15 +245,15 @@ twitter_login(char *username, char *password)
 		if (curl_handle) {
 			curl_easy_setopt(curl_handle, CURLOPT_USERNAME, username);
 			curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, password);
-			curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, empty_callback);
+			curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
+			curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)mem);
+			curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
 			curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
-			curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, "true");
 			success = curl_easy_perform(curl_handle);
 			curl_easy_cleanup(curl_handle);
 		}
-		if (success == CURLE_HTTP_RETURNED_ERROR)
-			return 0;
-		else {
+		free(mem);
+		if (success == CURLE_OK) {
 			libtwit_twitter_username = malloc(SLENGTH);
 			libtwit_twitter_password = malloc(SLENGTH);
 
@@ -259,9 +262,11 @@ twitter_login(char *username, char *password)
 
 			return 1;
 		}
+		else
+			return 0; /* User probably typed in the wrong login info. */
 	}
 	else
-		return 0;
+		return 1;
 }
 
 int 
@@ -272,9 +277,13 @@ send_post_update(char *url, char *file, char *in_message)
 	struct curl_httppost *message = NULL;
 	struct curl_httppost *last = NULL;
 	struct curl_slist *slist = NULL;
+	struct xml_memory *mem = malloc(sizeof(struct xml_memory));
+
+	mem->memory = NULL;
+	mem->size = 0;
 
 	char build_url[SLENGTH];
-	strcat(build_url, url);
+	strncpy(build_url, url, SLENGTH);
 	strcat(build_url, file);
 
 	curl_formadd(&message, &last, CURLFORM_COPYNAME, "status", CURLFORM_COPYCONTENTS, in_message, CURLFORM_END);
@@ -286,6 +295,9 @@ send_post_update(char *url, char *file, char *in_message)
 		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
 		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
 		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
+		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
+		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
+		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)mem);
 		curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, message);
 		curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, slist);
 		success = curl_easy_perform(curl_handle);
@@ -293,7 +305,8 @@ send_post_update(char *url, char *file, char *in_message)
 		curl_easy_cleanup(curl_handle);
 		curl_formfree(message);
 	}
-	if (!success)
+	free(mem);
+	if (success == CURLE_OK)
 		return 1;
 	else
 		return 0;
@@ -320,7 +333,7 @@ xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 static size_t
 empty_callback(void *ptr, size_t size, size_t nmemb, void *data)
 {
-	return 0;
+	return (size_t)0;
 }
 
 struct 
@@ -333,14 +346,14 @@ xml_memory *retrieve_xml_file(char *file)
 	mem->memory = NULL;
 	mem->size = 0;
 
-	char build_url[SLENGTH];
-	strcat(build_url, STATUS_URL);
+	char build_url[SLENGTH] = STATUS_URL;
 	strcat(build_url, file);
 
 	curl_handle = curl_easy_init();
 	if (curl_handle) {
 		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
 		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
+		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)mem);
 		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
@@ -348,7 +361,7 @@ xml_memory *retrieve_xml_file(char *file)
 
 		curl_easy_cleanup(curl_handle);
 	}
-	if (!success) {
+	if (success == CURLE_OK) {
 		return mem;
 	}
 	else

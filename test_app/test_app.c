@@ -5,25 +5,39 @@
 #include <stdlib.h>
 #include <string.h>
 
-void parse_action(char *arg[])
+void parse_action(char *argv[])
 {
 	int success;
 
-	if (strcmp(arg[1], "user") == 0)
+	if (strcmp(argv[1], "user") == 0)
 	{
+		if (!twitter_login(argv[2], argv[3])) {
+			printf("Error logging in. Are your credentials correct?\n");
+			exit(0);
+		}
 		handle_tweets(parse_user_timeline());
 	}
-	else if (strcmp(arg[1], "friends") == 0)
+	else if (strcmp(argv[1], "friends") == 0)
 	{
+		if (!twitter_login(argv[2], argv[3])) {
+			printf("Error logging in. Are your credentials correct?\n");
+			exit(0);
+		}
 		handle_tweets(parse_friends_timeline());
 	}
-	else if (strcmp(arg[1], "update") == 0)
+	else if (strcmp(argv[1], "update") == 0)
 	{
-		success = send_update(arg[4]);
-		if (success)
-			printf("Update sent.\n");
-		else
+		if (!twitter_login(argv[3], argv[4])) {
+			printf("Error logging in. Are your credentials correct?\n");
+			exit(0);
+		}
+		success = send_update(argv[2]);
+		if (!success) {
 			printf("Failed to post update.\n");
+			exit(0);
+		}
+		else
+			printf("Update sent->\"%s\"\n", argv[2]);
 	}
 	else
 	{
@@ -64,10 +78,6 @@ int main(int argc, char *argv[])
 	if ((argc < 4))
 	{
 		display_usage();
-	}
-	if (!twitter_login(argv[2], argv[3])) {
-		printf("Error logging in. Are your credentials correct?");
-		exit(0);
 	}
 	parse_action(argv);
 

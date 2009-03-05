@@ -8,7 +8,7 @@
 #define STATUS_URL "http://twitter.com/statuses/"
 #define ACCOUNT_URL "http://twitter.com/account/"
 
-#define SLENGTH 255
+#define SLENGTH 254
 
 
 struct twitter_user
