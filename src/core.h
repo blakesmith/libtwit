@@ -1,4 +1,5 @@
 #include <libxml/parser.h>
+#include <curl/curl.h>
 #include <time.h>
 
 #define FRIENDS_TIMELINE "friends_timeline.xml"
@@ -46,6 +47,8 @@ struct xml_memory
 	size_t size;
 };
 
+extern CURL *libtwit_curl_handle;
+extern CURLcode libtwit_curl_code;
 extern char *libtwit_twitter_username;
 extern char *libtwit_twitter_password;
 

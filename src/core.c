@@ -8,6 +8,8 @@
 #include "core.h"
 #include "status.h"
 
+CURL *libtwit_curl_handle;
+CURLcode libtwit_curl_code;
 char *libtwit_twitter_username;
 char *libtwit_twitter_password;
 
@@ -27,6 +29,7 @@ void
 *libtwit_init()
 {
 	curl_global_init(CURL_GLOBAL_ALL);
+	libtwit_curl_handle = curl_easy_init();
 }
 
 void 
@@ -34,6 +37,7 @@ libtwit_deinit()
 {
 	free(libtwit_twitter_username);
 	free(libtwit_twitter_password);
+	curl_easy_cleanup(libtwit_curl_handle);
 	curl_global_cleanup();
 }
 
@@ -53,6 +57,7 @@ struct tweet
 
 	if (newTweet == NULL) {
 		printf("Out of memory, dying...");
+		libtwit_deinit();
 		exit(0);
 	}
 
@@ -131,11 +136,6 @@ struct tweet
 	struct tweet *starting_tweet;
 	struct tweet *current_tweet = NULL;
 	struct tweet *previous_tweet = NULL;
-
-	if (cur == NULL) {
-		printf("No tweets to parse!\n");
-		exit(0);
-	}
 
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
@@ -231,8 +231,6 @@ int
 twitter_login(char *username, char *password)
 {
 	if (!is_authenticated()) {
-		CURL *curl_handle;
-		CURLcode success;
 		struct xml_memory *mem = malloc(sizeof(struct xml_memory));
 
 		mem->memory = NULL;
@@ -241,20 +239,17 @@ twitter_login(char *username, char *password)
 		char build_url[SLENGTH] = ACCOUNT_URL;
 		strcat(build_url, VERIFY_CREDENTIALS);
 
-		curl_handle = curl_easy_init();
-
-		if (curl_handle) {
-			curl_easy_setopt(curl_handle, CURLOPT_USERNAME, username);
-			curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, password);
-			curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
-			curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)mem);
-			curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-			curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
-			success = curl_easy_perform(curl_handle);
-			curl_easy_cleanup(curl_handle);
+		if (libtwit_curl_handle) {
+			curl_easy_setopt(libtwit_curl_handle, CURLOPT_USERNAME, username);
+			curl_easy_setopt(libtwit_curl_handle, CURLOPT_PASSWORD, password);
+			curl_easy_setopt(libtwit_curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
+			curl_easy_setopt(libtwit_curl_handle, CURLOPT_WRITEDATA, (void *)mem);
+			curl_easy_setopt(libtwit_curl_handle, CURLOPT_FAILONERROR, 1);
+			curl_easy_setopt(libtwit_curl_handle, CURLOPT_URL, build_url);
+			libtwit_curl_code = curl_easy_perform(libtwit_curl_handle);
 		}
 		free(mem);
-		if (success == CURLE_OK) {
+		if (libtwit_curl_code == CURLE_OK) {
 			libtwit_twitter_username = malloc(SLENGTH);
 			libtwit_twitter_password = malloc(SLENGTH);
 
@@ -275,8 +270,6 @@ send_post_update(char *url, char *file, char *in_message)
 {
 	if (!check_update_length(in_message)) /* Is the message longer than 140 characters? */
 		return 0;
-	CURLcode success;
-	CURL *curl_handle;
 	struct curl_httppost *message = NULL;
 	struct curl_httppost *last = NULL;
 	struct curl_slist *slist = NULL;
@@ -291,25 +284,22 @@ send_post_update(char *url, char *file, char *in_message)
 
 	curl_formadd(&message, &last, CURLFORM_COPYNAME, "status", CURLFORM_COPYCONTENTS, in_message, CURLFORM_END);
 	slist = curl_slist_append(slist, "Expect:");
-
-	curl_handle = curl_easy_init();
 	
-	if (curl_handle) {
-		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
-		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
-		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
-		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)mem);
-		curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, message);
-		curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, slist);
-		success = curl_easy_perform(curl_handle);
+	if (libtwit_curl_handle) {
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_URL, build_url);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_FAILONERROR, 1);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_WRITEDATA, (void *)mem);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_HTTPPOST, message);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_HTTPHEADER, slist);
+		libtwit_curl_code = curl_easy_perform(libtwit_curl_handle);
 
-		curl_easy_cleanup(curl_handle);
 		curl_formfree(message);
 	}
 	free(mem);
-	if (success == CURLE_OK)
+	if (libtwit_curl_code == CURLE_OK)
 		return 1;
 	else
 		return 0;
@@ -342,8 +332,6 @@ empty_callback(void *ptr, size_t size, size_t nmemb, void *data)
 struct 
 xml_memory *retrieve_xml_file(char *file)
 {
-	CURLcode success;
-	CURL *curl_handle;
 	struct xml_memory *mem = malloc(sizeof(struct xml_memory));
 
 	mem->memory = NULL;
@@ -352,19 +340,16 @@ xml_memory *retrieve_xml_file(char *file)
 	char build_url[SLENGTH] = STATUS_URL;
 	strcat(build_url, file);
 
-	curl_handle = curl_easy_init();
-	if (curl_handle) {
-		curl_easy_setopt(curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
-		curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
-		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)mem);
-		curl_easy_setopt(curl_handle, CURLOPT_URL, build_url);
-		success = curl_easy_perform(curl_handle);
-
-		curl_easy_cleanup(curl_handle);
+	if (libtwit_curl_handle) {
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_PASSWORD, libtwit_twitter_password);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_FAILONERROR, 1);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_WRITEDATA, (void *)mem);
+		curl_easy_setopt(libtwit_curl_handle, CURLOPT_URL, build_url);
+		libtwit_curl_code = curl_easy_perform(libtwit_curl_handle);
 	}
-	if (success == CURLE_OK) {
+	if (libtwit_curl_code == CURLE_OK) {
 		return mem;
 	}
 	else
