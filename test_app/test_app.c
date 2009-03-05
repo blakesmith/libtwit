@@ -16,6 +16,7 @@ void parse_action(char *arg[])
 	else if (strcmp(arg[1], "friends") == 0)
 	{
 		handle_tweets(parse_friends_timeline());
+		handle_tweets(parse_user_timeline());
 	}
 	else if (strcmp(arg[1], "update") == 0)
 	{
@@ -52,6 +53,7 @@ void handle_tweets(struct tweet *first_tweet)
 	}
 	else
 		display_tweets(first_tweet);
+		destroy_tweets(first_tweet);
 }
 
 int main(int argc, char *argv[])

@@ -6,7 +6,34 @@
 #include <libxml/parser.h>
 
 #include "core.h"
-#include "stack.h"
+
+char *libtwit_twitter_username;
+char *libtwit_twitter_password;
+
+void 
+destroy_tweets(struct tweet *current)
+{
+
+	while (current != NULL) {
+		struct tweet *i = current->next;
+		free(current->user);
+		free(current);
+		current = i;
+	}
+}
+
+void 
+*libtwit_init()
+{
+	curl_global_init(CURL_GLOBAL_ALL);
+}
+
+void 
+libtwit_deinit()
+{
+	free(libtwit_twitter_username);
+	free(libtwit_twitter_password);
+}
 
 xmlDocPtr 
 open_xml_file(struct xml_memory *mem)
@@ -29,18 +56,6 @@ struct tweet
 
 	newTweet->prev = previous_node;
 	return newTweet;
-}
-
-void 
-destroy_tweets(struct tweet *current)
-{
-
-	while (current != NULL) {
-		struct tweet *i = current->next;
-		free(current->user);
-		free(current);
-		current = i;
-	}
 }
 
 struct twitter_user 
@@ -146,8 +161,6 @@ struct tweet
 		else if ((!xmlStrcmp(cur->name, (const xmlChar *)"error")))
 			return NULL;
 	}
-	add_tweet_list(starting_tweet);
-
 	return starting_tweet;
 }
 
@@ -336,7 +349,6 @@ xml_memory *retrieve_xml_file(char *file)
 		curl_easy_cleanup(curl_handle);
 	}
 	if (!success) {
-		printf("Successful login!\n");
 		return mem;
 	}
 	else

@@ -5,32 +5,4 @@
 #include <stdlib.h>
 
 #include "stack.h"
-
-struct resource_list
-{
-	struct tweet *first_node;
-	struct resource_list *next;
-	struct resource_list *prev;
-};
-
-struct stack
-{
-	struct resource_list *first_node;
-	struct resource_list *current_node;
-
-};
-
-extern struct stack *libtwit_stack;
-
-struct tweet *add_tweet_list(struct tweet *first_node);
-
-void destroy_tweets(struct tweet *current);
-
-void destroy_resource_list(struct resource_list *current_resource);
-
-void *libtwit_init();
-
-void libtwit_deinit();
-
-
 #endif

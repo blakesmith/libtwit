@@ -1,8 +1,6 @@
 #include <libxml/parser.h>
 #include <time.h>
 
-#include "stack.h"
-
 #define FRIENDS_TIMELINE "friends_timeline.xml"
 #define USER_TIMELINE "user_timeline.xml"
 #define UPDATE "update.xml"
@@ -50,6 +48,12 @@ struct xml_memory
 
 extern char *libtwit_twitter_username;
 extern char *libtwit_twitter_password;
+
+void destroy_tweets(struct tweet *current);
+
+void *libtwit_init();
+
+void libtwit_deinit();
 
 void display_tweets(struct tweet *starting_tweet);
 
