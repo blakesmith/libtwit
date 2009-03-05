@@ -13,6 +13,7 @@ void parse_action(char *argv[])
 	{
 		if (!twitter_login(argv[2], argv[3])) {
 			printf("Error logging in. Are your credentials correct?\n");
+			libtwit_deinit();
 			exit(0);
 		}
 		handle_tweets(parse_user_timeline());
@@ -21,6 +22,7 @@ void parse_action(char *argv[])
 	{
 		if (!twitter_login(argv[2], argv[3])) {
 			printf("Error logging in. Are your credentials correct?\n");
+			libtwit_deinit();
 			exit(0);
 		}
 		handle_tweets(parse_friends_timeline());
@@ -29,11 +31,13 @@ void parse_action(char *argv[])
 	{
 		if (!twitter_login(argv[3], argv[4])) {
 			printf("Error logging in. Are your credentials correct?\n");
+			libtwit_deinit();
 			exit(0);
 		}
 		success = send_update(argv[2]);
 		if (!success) {
 			printf("Failed to post update.\n");
+			libtwit_deinit();
 			exit(0);
 		}
 		else
