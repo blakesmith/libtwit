@@ -339,15 +339,6 @@ xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 	return realsize;
 }
 
-/**
- * There must be a more sane way to do this with libcurl, but I couldn't seem to find a way to supress all data writing.
- */
-static size_t
-empty_callback(void *ptr, size_t size, size_t nmemb, void *data)
-{
-	return (size_t)0;
-}
-
 struct 
 xml_memory *retrieve_xml_file(char *file)
 {
