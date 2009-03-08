@@ -32,17 +32,17 @@ check_update_length(char *message)
 }
 
 struct tweet 
-*parse_friends_timeline()
+*parse_friends_timeline(char *optional_parameters[][2], int param_length)
 {
-	struct tweet *user_timeline = parse_tweet_doc(FRIENDS_TIMELINE);
+	struct tweet *user_timeline = parse_tweet_doc(FRIENDS_TIMELINE, NULL, 0);
 	
 	return user_timeline;
 }
 
 struct tweet 
-*parse_user_timeline()
+*parse_user_timeline(char )
 {
-	struct tweet *user_timeline = parse_tweet_doc(USER_TIMELINE);
+	struct tweet *user_timeline = parse_tweet_doc(USER_TIMELINE, NULL, 0);
 	
 	return user_timeline;
 }

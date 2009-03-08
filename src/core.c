@@ -342,8 +342,9 @@ xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 }
 
 struct 
-xml_memory *retrieve_xml_file(char *file)
+xml_memory *send_get_request(char *file, char *options[][2], int options_length)
 {
+	int i;
 	struct xml_memory *mem = malloc(sizeof(struct xml_memory));
 
 	mem->memory = NULL;
@@ -351,6 +352,11 @@ xml_memory *retrieve_xml_file(char *file)
 
 	char build_url[SLENGTH] = STATUS_URL;
 	strcat(build_url, file);
+	for (i = 0; i < options_length; ++i) {
+		char parameter[SLENGTH];
+		sprintf(parameter, "?%s=%s", options[i][0], options[i][1]);
+		strcat(build_url, parameter);
+	}
 
 	if (libtwit_curl_handle) {
 		curl_easy_setopt(libtwit_curl_handle, CURLOPT_USERNAME, libtwit_twitter_username);
@@ -369,13 +375,13 @@ xml_memory *retrieve_xml_file(char *file)
 }
 
 struct tweet 
-*parse_tweet_doc(char *tweet_doc)
+*parse_tweet_doc(char *tweet_doc, char *options[][2], int options_length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	struct tweet *starting_tweet;
 	struct xml_memory *mem;
-	mem = retrieve_xml_file(tweet_doc);
+	mem = send_get_request(tweet_doc, options, options_length);
 
 	if (mem) {
 		doc = open_xml_file(mem);
