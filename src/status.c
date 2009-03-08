@@ -55,7 +55,7 @@ send_update(char *message)
 	if (check_update_length(message) == LIBTWIT_MESSAGE_TOO_LONG) 
 		return LIBTWIT_MESSAGE_TOO_LONG;
 	else {
-		success = send_post_update(STATUS_URL, UPDATE, message);
+		success = send_post_message(STATUS_URL, UPDATE, message);
 		if (success == LIBTWIT_OK)
 			return LIBTWIT_OK;
 		else

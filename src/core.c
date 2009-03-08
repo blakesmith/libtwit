@@ -285,10 +285,16 @@ twitter_login(char *username, char *password)
 }
 
 int 
-send_post_update(char *url, char *file, char *in_message)
+send_post_message(char *url, char *file, char *in_message)
 {
 	if (!check_update_length(in_message)) /* Is the message longer than 140 characters? */
 		return 0;
+	return send_post_request(url, file, in_message);
+}
+
+int 
+send_post_request(char *url, char *file, char *in_message)
+{
 	struct curl_httppost *message = NULL;
 	struct curl_httppost *last = NULL;
 	struct curl_slist *slist = NULL;
