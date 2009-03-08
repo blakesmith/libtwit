@@ -22,6 +22,8 @@
 
 #include <string.h>
 
+#define LENGTH(x)	(sizeof(x) / sizeof(x[0]))
+
 int 
 check_update_length(char *message)
 {
@@ -52,10 +54,14 @@ send_update(char *message)
 {
 	int success;
 
+	char *options[][2] = {
+		{ "status", message }
+	};
+
 	if (check_update_length(message) == LIBTWIT_MESSAGE_TOO_LONG) 
 		return LIBTWIT_MESSAGE_TOO_LONG;
 	else {
-		success = send_post_message(STATUS_URL, UPDATE, message);
+		success = send_post_request(STATUS_URL, UPDATE, options, LENGTH(options));
 		if (success == LIBTWIT_OK)
 			return LIBTWIT_OK;
 		else

@@ -285,16 +285,9 @@ twitter_login(char *username, char *password)
 }
 
 int 
-send_post_message(char *url, char *file, char *in_message)
+send_post_request(char *url, char *file, char *options[][2], int options_length)
 {
-	if (!check_update_length(in_message)) /* Is the message longer than 140 characters? */
-		return 0;
-	return send_post_request(url, file, in_message);
-}
-
-int 
-send_post_request(char *url, char *file, char *in_message)
-{
+	int i;
 	struct curl_httppost *message = NULL;
 	struct curl_httppost *last = NULL;
 	struct curl_slist *slist = NULL;
@@ -307,7 +300,10 @@ send_post_request(char *url, char *file, char *in_message)
 	strncpy(build_url, url, SLENGTH);
 	strcat(build_url, file);
 
-	curl_formadd(&message, &last, CURLFORM_COPYNAME, "status", CURLFORM_COPYCONTENTS, in_message, CURLFORM_END);
+	for (i = 0; i < options_length; ++i) {
+		curl_formadd(&message, &last, CURLFORM_COPYNAME, options[i][0], CURLFORM_COPYCONTENTS, options[i][1], CURLFORM_END);
+	}
+	
 	slist = curl_slist_append(slist, "Expect:");
 	
 	if (libtwit_curl_handle) {

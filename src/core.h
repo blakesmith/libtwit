@@ -97,9 +97,7 @@ struct tweet *parse_tweets(xmlNodePtr cur);
 
 struct tweet *parse_tweet_doc();
 
-int send_post_message(char *url, char *file, char *in_message);
-
-int send_post_request(char *url, char *file, char *in_message);
+int send_post_request(char *url, char *file, char *options[][2], int options_length);
 
 int twitter_login(char *username, char *password);
 
