@@ -22,8 +22,6 @@
 
 #include <string.h>
 
-#define LENGTH(x)	(sizeof(x) / sizeof(x[0]))
-
 int 
 check_update_length(char *message)
 {

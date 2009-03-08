@@ -23,6 +23,10 @@
 #include <curl/curl.h>
 #include <time.h>
 
+/* Macros */
+#define LENGTH(x)	(sizeof(x) / sizeof(x[0]))
+
+/* Definitions */
 #define FRIENDS_TIMELINE "friends_timeline.xml"
 #define USER_TIMELINE "user_timeline.xml"
 #define UPDATE "update.xml"
