@@ -35,7 +35,7 @@ void parse_action(char *argv[])
 			libtwit_deinit();
 			exit(0);
 		}
-		handle_tweets(parse_user_timeline());
+		handle_tweets(parse_user_timeline(NULL, 0));
 	}
 	else if (strcmp(argv[1], "friends") == 0)
 	{
@@ -44,7 +44,7 @@ void parse_action(char *argv[])
 			libtwit_deinit();
 			exit(0);
 		}
-		handle_tweets(parse_friends_timeline());
+		handle_tweets(parse_friends_timeline(NULL, 0));
 	}
 	else if (strcmp(argv[1], "update") == 0)
 	{

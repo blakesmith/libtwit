@@ -345,6 +345,7 @@ struct
 xml_memory *send_get_request(char *file, char *options[][2], int options_length)
 {
 	int i;
+	char parameter[SLENGTH];
 	struct xml_memory *mem = malloc(sizeof(struct xml_memory));
 
 	mem->memory = NULL;
@@ -353,7 +354,6 @@ xml_memory *send_get_request(char *file, char *options[][2], int options_length)
 	char build_url[SLENGTH] = STATUS_URL;
 	strcat(build_url, file);
 	for (i = 0; i < options_length; ++i) {
-		char parameter[SLENGTH];
 		sprintf(parameter, "?%s=%s", options[i][0], options[i][1]);
 		strcat(build_url, parameter);
 	}
