@@ -54,8 +54,10 @@ void
 void 
 libtwit_deinit()
 {
-	free(libtwit_twitter_username);
-	free(libtwit_twitter_password);
+	if (libtwit_twitter_username != NULL && libtwit_twitter_password != NULL) {
+		free(libtwit_twitter_username);
+		free(libtwit_twitter_password);
+	}
 	curl_easy_cleanup(libtwit_curl_handle);
 	curl_global_cleanup();
 }
