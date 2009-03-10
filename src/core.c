@@ -342,7 +342,7 @@ xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 }
 
 struct 
-xml_memory *send_get_request(char *file, char *options[][2], int options_length)
+xml_memory *send_get_request(char *url, char *file, char *options[][2], int options_length)
 {
 	int i;
 	char parameter[SLENGTH];
@@ -351,7 +351,8 @@ xml_memory *send_get_request(char *file, char *options[][2], int options_length)
 	mem->memory = NULL;
 	mem->size = 0;
 
-	char build_url[SLENGTH] = STATUS_URL;
+	char build_url[SLENGTH];
+	strcpy(build_url, url);
 	strcat(build_url, file);
 	for (i = 0; i < options_length; ++i) {
 		sprintf(parameter, "?%s=%s", options[i][0], options[i][1]);
@@ -375,13 +376,13 @@ xml_memory *send_get_request(char *file, char *options[][2], int options_length)
 }
 
 struct tweet 
-*parse_tweet_doc(char *tweet_doc, char *options[][2], int options_length)
+*parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	struct tweet *starting_tweet;
 	struct xml_memory *mem;
-	mem = send_get_request(tweet_doc, options, options_length);
+	mem = send_get_request(url, tweet_doc, options, options_length);
 
 	if (mem) {
 		doc = open_xml_file(mem);

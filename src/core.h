@@ -99,9 +99,9 @@ void display_tweets(struct tweet *starting_tweet);
 
 struct tweet *parse_tweets(xmlNodePtr cur);
 
-struct tweet *parse_tweet_doc(char *tweet_doc, char *options[][2], int options_length);
+struct tweet *parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length);
 
-struct xml_memory *send_get_request(char *file, char *options[][2], int options_length);
+struct xml_memory *send_get_request(char *url, char *file, char *options[][2], int options_length);
 
 int send_post_request(char *url, char *file, char *options[][2], int options_length);
 
