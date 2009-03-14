@@ -17,16 +17,12 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef LIBTWIT_STATUS_H
-#define LIBTWIT_STATUS_H
+#ifndef LIBTWIT_ACCOUNT_H
+#define LIBTWIT_ACCOUNT_H
 
 #include "core.h"
 
-int libtwit_check_update_length(char *message);
+int libtwit_verify_credentials(char *username, char *password);
 
-struct status *libtwit_parse_friends_timeline(char *optional_parameters[][2], int param_length);
-
-struct status *libtwit_parse_user_timeline(char *optional_parameters[][2], int param_length);
-
-int libtwit_status_update(char *message);
+int libtwit_is_authenticated();
 #endif

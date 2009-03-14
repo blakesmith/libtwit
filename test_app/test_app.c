@@ -30,16 +30,16 @@ void parse_action(char *argv[])
 
 	if (strcmp(argv[1], "user") == 0)
 	{
-		if (twitter_login(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
+		if (libtwit_verify_credentials(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
 			printf("Error logging in. Are your credentials correct?\n");
 			libtwit_deinit();
 			exit(0);
 		}
-		handle_tweets(parse_user_timeline(NULL, 0));
+		handle_tweets(libtwit_parse_user_timeline(NULL, 0));
 	}
 	else if (strcmp(argv[1], "user_since") == 0)
 	{
-		if (twitter_login(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
+		if (libtwit_verify_credentials(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
 			printf("Error logging in. Are your credentials correct?\n");
 			libtwit_deinit();
 			exit(0);
@@ -48,25 +48,25 @@ void parse_action(char *argv[])
 			{ "since_id", "1301814112" }
 		};
 
-		handle_tweets(parse_user_timeline(options, LENGTH(options)));
+		handle_tweets(libtwit_parse_user_timeline(options, LENGTH(options)));
 	}
 	else if (strcmp(argv[1], "friends") == 0)
 	{
-		if (!twitter_login(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
+		if (libtwit_verify_credentials(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
 			printf("Error logging in. Are your credentials correct?\n");
 			libtwit_deinit();
 			exit(0);
 		}
-		handle_tweets(parse_friends_timeline(NULL, 0));
+		handle_tweets(libtwit_parse_friends_timeline(NULL, 0));
 	}
 	else if (strcmp(argv[1], "update") == 0)
 	{
-		if (!twitter_login(argv[3], argv[4]) == LIBTWIT_CREDENTIAL_ERROR) {
+		if (libtwit_verify_credentials(argv[3], argv[4]) == LIBTWIT_CREDENTIAL_ERROR) {
 			printf("Error logging in. Are your credentials correct?\n");
 			libtwit_deinit();
 			exit(0);
 		}
-		success = send_update(argv[2]);
+		success = libtwit_status_update(argv[2]);
 		if (success == LIBTWIT_MESSAGE_TOO_LONG) {
 			printf("Message exceeds 140 characters, please shorten it.\n");
 			libtwit_deinit();

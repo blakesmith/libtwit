@@ -237,55 +237,6 @@ display_tweets(struct status *starting_tweet)
 	}
 }
 
-
-int 
-is_authenticated()
-{
-	if (libtwit_twitter_username && libtwit_twitter_password)
-		return 1;	
-	else
-		return 0;
-}
-
-
-int 
-twitter_login(char *username, char *password)
-{
-	if (!is_authenticated()) {
-		struct xml_memory *mem = malloc(sizeof(struct xml_memory));
-
-		mem->memory = NULL;
-		mem->size = 0;
-
-		char build_url[SLENGTH] = ACCOUNT_URL;
-		strcat(build_url, VERIFY_CREDENTIALS);
-
-		if (libtwit_curl_handle) {
-			curl_easy_setopt(libtwit_curl_handle, CURLOPT_USERNAME, username);
-			curl_easy_setopt(libtwit_curl_handle, CURLOPT_PASSWORD, password);
-			curl_easy_setopt(libtwit_curl_handle, CURLOPT_WRITEFUNCTION, xml_write_callback);
-			curl_easy_setopt(libtwit_curl_handle, CURLOPT_WRITEDATA, (void *)mem);
-			curl_easy_setopt(libtwit_curl_handle, CURLOPT_FAILONERROR, 1);
-			curl_easy_setopt(libtwit_curl_handle, CURLOPT_URL, build_url);
-			libtwit_curl_code = curl_easy_perform(libtwit_curl_handle);
-		}
-		free(mem);
-		if (libtwit_curl_code == CURLE_OK) {
-			libtwit_twitter_username = malloc(SLENGTH);
-			libtwit_twitter_password = malloc(SLENGTH);
-
-			strncpy(libtwit_twitter_username, username, SLENGTH);
-			strncpy(libtwit_twitter_password, password, SLENGTH);
-
-			return LIBTWIT_OK;
-		}
-		else
-			return LIBTWIT_CREDENTIAL_ERROR; /* User probably typed in the wrong login info. */
-	}
-	else
-		return LIBTWIT_OK;
-}
-
 int 
 send_post_request(char *url, char *file, char *options[][2], int options_length)
 {
@@ -328,7 +279,7 @@ send_post_request(char *url, char *file, char *options[][2], int options_length)
 		return libtwit_curl_code;
 }
 
-static size_t
+extern size_t
 xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 {
 	size_t realsize = size * nmemb;

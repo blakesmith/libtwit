@@ -23,7 +23,7 @@
 #include <string.h>
 
 int 
-check_update_length(char *message)
+libtwit_check_update_length(char *message)
 {
 	if (strlen(message) > 140)
 		return LIBTWIT_MESSAGE_TOO_LONG;
@@ -32,7 +32,7 @@ check_update_length(char *message)
 }
 
 struct status 
-*parse_friends_timeline(char *optional_parameters[][2], int param_length)
+*libtwit_parse_friends_timeline(char *optional_parameters[][2], int param_length)
 {
 	struct status *user_timeline = parse_tweet_doc(STATUS_URL, FRIENDS_TIMELINE, optional_parameters, param_length);
 	
@@ -40,7 +40,7 @@ struct status
 }
 
 struct status 
-*parse_user_timeline(char *optional_parameters[][2], int param_length)
+*libtwit_parse_user_timeline(char *optional_parameters[][2], int param_length)
 {
 	struct status *user_timeline = parse_tweet_doc(STATUS_URL, USER_TIMELINE, optional_parameters, param_length);
 	
@@ -48,7 +48,7 @@ struct status
 }
 
 int 
-send_update(char *message)
+libtwit_status_update(char *message)
 {
 	int success;
 
@@ -56,7 +56,7 @@ send_update(char *message)
 		{ "status", message }
 	};
 
-	if (check_update_length(message) == LIBTWIT_MESSAGE_TOO_LONG) 
+	if (libtwit_check_update_length(message) == LIBTWIT_MESSAGE_TOO_LONG) 
 		return LIBTWIT_MESSAGE_TOO_LONG;
 	else {
 		success = send_post_request(STATUS_URL, UPDATE, options, LENGTH(options));

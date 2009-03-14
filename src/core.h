@@ -105,8 +105,6 @@ struct xml_memory *send_get_request(char *url, char *file, char *options[][2], i
 
 int send_post_request(char *url, char *file, char *options[][2], int options_length);
 
-int twitter_login(char *username, char *password);
-
-static size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);
+extern size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);
 
 #endif
