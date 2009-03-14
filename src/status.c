@@ -31,18 +31,18 @@ check_update_length(char *message)
 		return LIBTWIT_OK;
 }
 
-struct tweet 
+struct status 
 *parse_friends_timeline(char *optional_parameters[][2], int param_length)
 {
-	struct tweet *user_timeline = parse_tweet_doc(STATUS_URL, FRIENDS_TIMELINE, optional_parameters, param_length);
+	struct status *user_timeline = parse_tweet_doc(STATUS_URL, FRIENDS_TIMELINE, optional_parameters, param_length);
 	
 	return user_timeline;
 }
 
-struct tweet 
+struct status 
 *parse_user_timeline(char *optional_parameters[][2], int param_length)
 {
-	struct tweet *user_timeline = parse_tweet_doc(STATUS_URL, USER_TIMELINE, optional_parameters, param_length);
+	struct status *user_timeline = parse_tweet_doc(STATUS_URL, USER_TIMELINE, optional_parameters, param_length);
 	
 	return user_timeline;
 }

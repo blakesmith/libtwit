@@ -33,11 +33,11 @@ char *libtwit_twitter_username;
 char *libtwit_twitter_password;
 
 void 
-destroy_tweets(struct tweet *current)
+destroy_tweets(struct status *current)
 {
 
 	while (current != NULL) {
-		struct tweet *i = current->next;
+		struct status *i = current->next;
 		free(current->user);
 		free(current);
 		current = i;
@@ -70,11 +70,11 @@ open_xml_file(struct xml_memory *mem)
 	return doc;
 }
 
-struct tweet 
-*create_tweet(struct tweet *previous_node)
+struct status 
+*create_tweet(struct status *previous_node)
 {
-	struct tweet *newTweet;
-	newTweet = malloc(sizeof(struct tweet));
+	struct status *newTweet;
+	newTweet = malloc(sizeof(struct status));
 
 	if (newTweet == NULL) {
 		printf("Out of memory, dying...");
@@ -150,13 +150,13 @@ sanitize_string_bool(xmlChar *test_string)
 		return -1;
 }
 
-struct tweet 
-*parse_tweets(xmlNodePtr cur)
+struct status 
+*parse_status(xmlNodePtr cur)
 {
 	xmlNodePtr children;
-	struct tweet *starting_tweet;
-	struct tweet *current_tweet = NULL;
-	struct tweet *previous_tweet = NULL;
+	struct status *starting_tweet;
+	struct status *current_tweet = NULL;
+	struct status *previous_tweet = NULL;
 
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
@@ -188,9 +188,9 @@ struct tweet
 }
 
 void 
-display_tweets(struct tweet *starting_tweet)
+display_tweets(struct status *starting_tweet)
 {
-	struct tweet *i;
+	struct status *i;
 
 	for (i = starting_tweet; i != NULL; i = i->next) {
 		char created_char[SLENGTH];
@@ -377,19 +377,19 @@ xml_memory *send_get_request(char *url, char *file, char *options[][2], int opti
 		return NULL;
 }
 
-struct tweet 
+struct status 
 *parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur;
-	struct tweet *starting_tweet;
+	struct status *starting_tweet;
 	struct xml_memory *mem;
 	mem = send_get_request(url, tweet_doc, options, options_length);
 
 	if (mem) {
 		doc = open_xml_file(mem);
 		cur = xmlDocGetRootElement(doc);
-		starting_tweet = parse_tweets(cur);
+		starting_tweet = parse_status(cur);
 		xmlFreeDoc(doc);
 		free(mem);
 		

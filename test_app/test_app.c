@@ -103,7 +103,7 @@ void display_usage()
 	exit(0);
 }
 
-void handle_tweets(struct tweet *first_tweet)
+void handle_tweets(struct status *first_tweet)
 {
 	if (first_tweet == NULL)
 	{
@@ -117,7 +117,7 @@ void handle_tweets(struct tweet *first_tweet)
 
 int main(int argc, char *argv[])
 {
-	struct tweet *tweets;
+	struct status *tweets;
 
 	libtwit_init();
 

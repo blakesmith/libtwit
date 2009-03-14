@@ -24,9 +24,9 @@
 
 int check_update_length(char *message);
 
-struct tweet *parse_friends_timeline(char *optional_parameters[][2], int param_length);
+struct status *parse_friends_timeline(char *optional_parameters[][2], int param_length);
 
-struct tweet *parse_user_timeline(char *optional_parameters[][2], int param_length);
+struct status *parse_user_timeline(char *optional_parameters[][2], int param_length);
 
 int send_update(char *message);
 #endif

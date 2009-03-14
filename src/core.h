@@ -62,10 +62,10 @@ struct twitter_user
 	int followers_count;
 };
 
-struct tweet
+struct status
 {
-	struct tweet *prev;
-	struct tweet *next;
+	struct status *prev;
+	struct status *next;
 	struct tm created_at;
 	int id;
 	xmlChar *text;
@@ -89,17 +89,17 @@ extern CURLcode libtwit_curl_code;
 extern char *libtwit_twitter_username;
 extern char *libtwit_twitter_password;
 
-void destroy_tweets(struct tweet *current);
+void destroy_tweets(struct status *current);
 
 void *libtwit_init();
 
 void libtwit_deinit();
 
-void display_tweets(struct tweet *starting_tweet);
+void display_tweets(struct status *starting_tweet);
 
-struct tweet *parse_tweets(xmlNodePtr cur);
+struct status *parse_status(xmlNodePtr cur);
 
-struct tweet *parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length);
+struct status *parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length);
 
 struct xml_memory *send_get_request(char *url, char *file, char *options[][2], int options_length);
 
