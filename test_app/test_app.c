@@ -28,7 +28,10 @@ void parse_action(char *argv[])
 {
 	int success;
 
-	if (strcmp(argv[1], "user") == 0)
+	if (strcmp(argv[1], "public") == 0)
+		handle_tweets(libtwit_parse_public_timeline(NULL, 0));
+
+	else if (strcmp(argv[1], "user") == 0)
 	{
 		if (libtwit_verify_credentials(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
 			printf("Error logging in. Are your credentials correct?\n");

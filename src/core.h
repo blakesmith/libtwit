@@ -27,14 +27,19 @@
 #define LENGTH(x)	(sizeof(x) / sizeof(x[0]))
 
 /* Definitions */
+
+/* Status */
+#define STATUS_URL "http://twitter.com/statuses/"
+#define PUBLIC_TIMELINE "public_timeline.xml"
 #define FRIENDS_TIMELINE "friends_timeline.xml"
 #define USER_TIMELINE "user_timeline.xml"
 #define UPDATE "update.xml"
-#define VERIFY_CREDENTIALS "verify_credentials.xml"
-#define STATUS_URL "http://twitter.com/statuses/"
-#define ACCOUNT_URL "http://twitter.com/account/"
 
-#define SLENGTH 254
+/* Account */
+#define ACCOUNT_URL "http://twitter.com/account/"
+#define VERIFY_CREDENTIALS "verify_credentials.xml"
+
+#define SLENGTH 256
 
 extern enum {
 	/**

@@ -31,6 +31,14 @@ libtwit_check_update_length(char *message)
 		return LIBTWIT_OK;
 }
 
+struct status
+*libtwit_parse_public_timeline()
+{
+	struct status *public_timeline = parse_tweet_doc(STATUS_URL, PUBLIC_TIMELINE, NULL, 0);
+
+	return public_timeline;
+}
+
 struct status 
 *libtwit_parse_friends_timeline(char *optional_parameters[][2], int param_length)
 {

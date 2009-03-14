@@ -24,6 +24,8 @@
 
 int libtwit_check_update_length(char *message);
 
+struct status *libtwit_parse_public_timeline();
+
 struct status *libtwit_parse_friends_timeline(char *optional_parameters[][2], int param_length);
 
 struct status *libtwit_parse_user_timeline(char *optional_parameters[][2], int param_length);
