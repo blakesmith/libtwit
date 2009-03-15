@@ -123,7 +123,6 @@ struct twitter_user
 {
 	struct twitter_user *new_user = create_user();
 	int i;
-	xmlChar *stored_node_values[LENGTH(search_strings)];
 	char *search_strings[] = {
 		"id",
 		"name",
@@ -135,6 +134,7 @@ struct twitter_user
 		"protected",
 		"followers_count"
 	};
+	xmlChar *stored_node_values[LENGTH(search_strings)];
 
 	for (i = 0; i < LENGTH(search_strings); ++i) {
 		stored_node_values[i] = get_node_value(parent, search_strings[i]);
