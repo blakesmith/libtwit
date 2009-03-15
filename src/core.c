@@ -122,16 +122,36 @@ struct twitter_user
 *get_user_data(xmlNodePtr parent)
 {
 	struct twitter_user *new_user = create_user();
+	int i;
+	xmlChar *stored_node_values[LENGTH(search_strings)];
+	char *search_strings[] = {
+		"id",
+		"name",
+		"screen_name",
+		"location",
+		"description",
+		"profile_image_url",
+		"url",
+		"protected",
+		"followers_count"
+	};
 
-	new_user->id = atoi(get_node_value(parent, "id"));
-	new_user->name = get_node_value(parent, "name");
-	new_user->screen_name = get_node_value(parent, "screen_name");
-	new_user->location = get_node_value(parent, "location");
-	new_user->description = get_node_value(parent, "description");
-	new_user->profile_image_url = get_node_value(parent, "profile_image_url");
-	new_user->url = get_node_value(parent, "url");
-	new_user->prot = sanitize_string_bool(get_node_value(parent, "protected"));
-	new_user->followers_count = atoi(get_node_value(parent, "followers_count"));
+	for (i = 0; i < LENGTH(search_strings); ++i) {
+		stored_node_values[i] = get_node_value(parent, search_strings[i]);
+	}
+
+	new_user->id = atoi(stored_node_values[0]);
+	new_user->name = stored_node_values[1];
+	new_user->screen_name = stored_node_values[2];
+	new_user->location = stored_node_values[3];
+	new_user->description = stored_node_values[4];
+	new_user->profile_image_url = stored_node_values[5];
+	new_user->url = stored_node_values[6];
+	new_user->prot = sanitize_string_bool(stored_node_values[7]);
+	new_user->followers_count = atoi(stored_node_values[8]);
+
+	for (i = 0; i < LENGTH(search_strings); ++i)
+		xmlFree(stored_node_values[i]);
 
 	return new_user;
 }
