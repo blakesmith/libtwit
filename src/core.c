@@ -154,37 +154,37 @@ struct status
 *parse_status(xmlNodePtr cur)
 {
 	xmlNodePtr children;
-	struct status *starting_tweet;
-	struct status *current_tweet = NULL;
-	struct status *previous_tweet = NULL;
+	struct status *starting_status;
+	struct status *current_status = NULL;
+	struct status *previous_status = NULL;
 
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
-			previous_tweet = current_tweet; /* First loop this is NULL */
-			current_tweet = create_tweet(previous_tweet);
+			previous_status = current_status; /* First loop this is NULL */
+			current_status = create_tweet(previous_status);
 
-			if (previous_tweet != NULL)
-				previous_tweet->next = current_tweet;
+			if (previous_status != NULL)
+				previous_status->next = current_status;
 			else
-				starting_tweet = current_tweet;
+				starting_status = current_status;
 
-			strptime((char *)get_node_value(cur, "created_at"), "%a %b %d %H:%M:%S +0000 %Y", &(current_tweet->created_at)); /* Sets the created_at */
-			current_tweet->user = get_user_data(get_node_ptr(cur, "user"));
-			current_tweet->next = NULL;
-			current_tweet->prev = previous_tweet;
-			current_tweet->id = atoi(get_node_value(cur, "id"));
-			current_tweet->text = get_node_value(cur, "text");
-			current_tweet->source = get_node_value(cur, "source");
-			current_tweet->truncated = sanitize_string_bool(get_node_value(cur, "truncated"));
-			current_tweet->in_reply_to_status_id = atoi(get_node_value(cur, "in_reply_to_status_id"));
-			current_tweet->in_reply_to_user_id = atoi(get_node_value(cur, "in_reply_to_user_id"));
-			current_tweet->favorited = sanitize_string_bool(get_node_value(cur, "favorited"));
-			current_tweet->in_reply_to_screen_name = get_node_value(cur, "in_reply_to_screen_name");
+			strptime((char *)get_node_value(cur, "created_at"), "%a %b %d %H:%M:%S +0000 %Y", &(current_status->created_at)); /* Sets the created_at */
+			current_status->user = get_user_data(get_node_ptr(cur, "user"));
+			current_status->next = NULL;
+			current_status->prev = previous_status;
+			current_status->id = atoi(get_node_value(cur, "id"));
+			current_status->text = get_node_value(cur, "text");
+			current_status->source = get_node_value(cur, "source");
+			current_status->truncated = sanitize_string_bool(get_node_value(cur, "truncated"));
+			current_status->in_reply_to_status_id = atoi(get_node_value(cur, "in_reply_to_status_id"));
+			current_status->in_reply_to_user_id = atoi(get_node_value(cur, "in_reply_to_user_id"));
+			current_status->favorited = sanitize_string_bool(get_node_value(cur, "favorited"));
+			current_status->in_reply_to_screen_name = get_node_value(cur, "in_reply_to_screen_name");
 		}
 		else if ((!xmlStrcmp(cur->name, (const xmlChar *)"error")))
 			return NULL;
 	}
-	return starting_tweet;
+	return starting_status;
 }
 
 void 
