@@ -394,6 +394,7 @@ struct status
 		cur = xmlDocGetRootElement(doc);
 		starting_tweet = parse_status(cur);
 		xmlFreeDoc(doc);
+		free(mem->memory);
 		free(mem);
 		
 		return starting_tweet;
