@@ -102,18 +102,35 @@ void *libtwit_init();
 
 void libtwit_deinit();
 
-void display_tweets(struct status *starting_tweet);
+xmlDocPtr open_xml_file(struct xml_memory *mem);
+
+struct status *create_tweet(struct status *previous_node);
+
+struct twitter_user *create_user();
+
+xmlChar *get_node_value(xmlNodePtr parent, char *search_string);
+
+xmlNodePtr get_node_ptr(xmlNodePtr parent, char *search_string);
+
+struct twitter_user *get_user_data(xmlNodePtr parent);
 
 void destroy_user_data(struct twitter_user *user);
 
+int sanitize_string_bool(xmlChar *test_string);
+
 struct status *parse_status(xmlNodePtr cur);
 
-struct status *parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length);
-
-struct xml_memory *send_get_request(char *url, char *file, char *options[][2], int options_length);
+void display_tweets(struct status *starting_tweet);
 
 int send_post_request(char *url, char *file, char *options[][2], int options_length);
 
 extern size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);
+
+struct xml_memory *send_get_request(char *url, char *file, char *options[][2], int options_length);
+
+struct status *parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length);
+
+
+
 
 #endif
