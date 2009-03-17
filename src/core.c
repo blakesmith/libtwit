@@ -38,6 +38,7 @@ destroy_tweets(struct status *current)
 
 	while (current != NULL) {
 		struct status *i = current->next;
+		destroy_status_data(current);
 		destroy_user_data(current->user);
 		free(current->user);
 		free(current);
@@ -178,11 +179,22 @@ sanitize_string_bool(xmlChar *test_string)
 struct status 
 *parse_status(xmlNodePtr cur)
 {
+	int i;
 	xmlNodePtr children;
 	struct status *starting_status;
 	struct status *current_status = NULL;
 	struct status *previous_status = NULL;
-
+	char *search_strings[] = {
+		"created_at",
+		"id",
+		"text",
+		"source",
+		"truncated",
+		"in_reply_to_user_id",
+		"in_reply_to_status_id",
+		"favorited",
+		"in_reply_to_screen_name"
+	};
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
 			previous_status = current_status; /* First loop this is NULL */
@@ -193,23 +205,38 @@ struct status
 			else
 				starting_status = current_status;
 
-			strptime((char *)get_node_value(cur, "created_at"), "%a %b %d %H:%M:%S +0000 %Y", &(current_status->created_at)); /* Sets the created_at */
-			current_status->user = get_user_data(get_node_ptr(cur, "user"));
+			/* Parse all strings from the xml document */
+			for (i = 0; i < STATUS_LENGTH; ++i) {
+				current_status->stored_node_ptr[i] = get_node_value(cur, search_strings[i]);
+			}
+
+			/* Now put them into the structure with their proper type */
 			current_status->next = NULL;
 			current_status->prev = previous_status;
-			current_status->id = atoi(get_node_value(cur, "id"));
-			current_status->text = get_node_value(cur, "text");
-			current_status->source = get_node_value(cur, "source");
-			current_status->truncated = sanitize_string_bool(get_node_value(cur, "truncated"));
-			current_status->in_reply_to_status_id = atoi(get_node_value(cur, "in_reply_to_status_id"));
-			current_status->in_reply_to_user_id = atoi(get_node_value(cur, "in_reply_to_user_id"));
-			current_status->favorited = sanitize_string_bool(get_node_value(cur, "favorited"));
-			current_status->in_reply_to_screen_name = get_node_value(cur, "in_reply_to_screen_name");
+			strptime((char *)current_status->stored_node_ptr[0], "%a %b %d %H:%M:%S +0000 %Y", &(current_status->created_at)); /* Sets the created_at */
+			current_status->user = get_user_data(get_node_ptr(cur, "user"));
+			current_status->id = atoi(current_status->stored_node_ptr[1]);
+			current_status->text = current_status->stored_node_ptr[2];
+			current_status->source = current_status->stored_node_ptr[3];
+			current_status->truncated = sanitize_string_bool(current_status->stored_node_ptr[4]);
+			current_status->in_reply_to_status_id = atoi(current_status->stored_node_ptr[5]);
+			current_status->in_reply_to_user_id = atoi(current_status->stored_node_ptr[6]);
+			current_status->favorited = sanitize_string_bool(current_status->stored_node_ptr[7]);
+			current_status->in_reply_to_screen_name = current_status->stored_node_ptr[8];
 		}
 		else if ((!xmlStrcmp(cur->name, (const xmlChar *)"error")))
 			return NULL;
 	}
 	return starting_status;
+}
+
+void
+destroy_status_data(struct status *current_status)
+{
+	int i;
+
+	for (i = 0; i < STATUS_LENGTH; ++i)
+		xmlFree(current_status->stored_node_ptr[i]);
 }
 
 void 

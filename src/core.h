@@ -41,6 +41,7 @@
 
 #define SLENGTH 256
 #define USER_LENGTH 9
+#define STATUS_LENGTH 9
 
 extern enum {
 	/**
@@ -57,7 +58,6 @@ extern enum {
 
 struct twitter_user
 {
-	xmlChar *stored_node_ptr[USER_LENGTH];
 	int id;
 	xmlChar *name;
 	xmlChar *screen_name;
@@ -67,6 +67,7 @@ struct twitter_user
 	xmlChar *url;
 	int prot;
 	int followers_count;
+	xmlChar *stored_node_ptr[USER_LENGTH];
 };
 
 struct status
@@ -83,6 +84,7 @@ struct status
 	int favorited;
 	xmlChar *in_reply_to_screen_name;
 	struct twitter_user *user;
+	xmlChar *stored_node_ptr[STATUS_LENGTH];
 };
 
 struct xml_memory
@@ -119,6 +121,8 @@ void destroy_user_data(struct twitter_user *user);
 int sanitize_string_bool(xmlChar *test_string);
 
 struct status *parse_status(xmlNodePtr cur);
+
+void destroy_status_data(struct status *current_status);
 
 void display_tweets(struct status *starting_tweet);
 
