@@ -46,6 +46,7 @@ libtwit_verify_credentials(char *username, char *password)
 			curl_easy_setopt(libtwit_curl_handle, CURLOPT_URL, build_url);
 			libtwit_curl_code = curl_easy_perform(libtwit_curl_handle);
 		}
+		free(mem->memory);
 		free(mem);
 		if (libtwit_curl_code == CURLE_OK) {
 			libtwit_twitter_username = malloc(SLENGTH);

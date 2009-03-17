@@ -323,7 +323,9 @@ send_post_request(char *url, char *file, char *options[][2], int options_length)
 		libtwit_curl_code = curl_easy_perform(libtwit_curl_handle);
 
 		curl_formfree(message);
+		curl_slist_free_all(slist);
 	}
+	free(mem->memory);
 	free(mem);
 	if (libtwit_curl_code == CURLE_OK)
 		return LIBTWIT_OK;
