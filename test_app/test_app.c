@@ -17,12 +17,12 @@
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "../src/status.h"
 #include "test_app.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libtwit/status.h>
 
 void parse_action(char *argv[])
 {

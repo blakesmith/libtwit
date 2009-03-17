@@ -16,9 +16,15 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+#ifndef TEST_APP_H
+#define TEST_APP_H
+
+#include <libtwit/status.h>
 
 void parse_action(char *arg[]);
 
 void display_usage();
 
 void handle_tweets(struct status *first_tweet);
+
+#endif
