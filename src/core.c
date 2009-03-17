@@ -38,6 +38,7 @@ destroy_tweets(struct status *current)
 
 	while (current != NULL) {
 		struct status *i = current->next;
+		destroy_user_data(current->user);
 		free(current->user);
 		free(current);
 		current = i;
@@ -134,28 +135,32 @@ struct twitter_user
 		"protected",
 		"followers_count"
 	};
-	xmlChar *stored_node_values[LENGTH(search_strings)];
 
 	for (i = 0; i < LENGTH(search_strings); ++i) {
-		stored_node_values[i] = get_node_value(parent, search_strings[i]);
+		new_user->stored_node_ptr[i] = get_node_value(parent, search_strings[i]);
 	}
 
-	new_user->id = atoi(stored_node_values[0]);
-	new_user->name = stored_node_values[1];
-	new_user->screen_name = stored_node_values[2];
-	new_user->location = stored_node_values[3];
-	new_user->description = stored_node_values[4];
-	new_user->profile_image_url = stored_node_values[5];
-	new_user->url = stored_node_values[6];
-	new_user->prot = sanitize_string_bool(stored_node_values[7]);
-	new_user->followers_count = atoi(stored_node_values[8]);
-
-	for (i = 0; i < LENGTH(search_strings); ++i)
-		xmlFree(stored_node_values[i]);
+	new_user->id = atoi(new_user->stored_node_ptr[0]);
+	new_user->name = new_user->stored_node_ptr[1];
+	new_user->screen_name = new_user->stored_node_ptr[2];
+	new_user->location = new_user->stored_node_ptr[3];
+	new_user->description = new_user->stored_node_ptr[4];
+	new_user->profile_image_url = new_user->stored_node_ptr[5];
+	new_user->url = new_user->stored_node_ptr[6];
+	new_user->prot = sanitize_string_bool(new_user->stored_node_ptr[7]);
+	new_user->followers_count = atoi(new_user->stored_node_ptr[8]);
 
 	return new_user;
 }
 
+void
+destroy_user_data(struct twitter_user *user)
+{
+	int i;
+
+	for (i = 0; i <  USER_LENGTH; ++i)
+		xmlFree(user->stored_node_ptr[i]);
+}
 
 int 
 sanitize_string_bool(xmlChar *test_string)

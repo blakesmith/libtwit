@@ -40,6 +40,7 @@
 #define VERIFY_CREDENTIALS "verify_credentials.xml"
 
 #define SLENGTH 256
+#define USER_LENGTH 9
 
 extern enum {
 	/**
@@ -56,6 +57,7 @@ extern enum {
 
 struct twitter_user
 {
+	xmlChar *stored_node_ptr[USER_LENGTH];
 	int id;
 	xmlChar *name;
 	xmlChar *screen_name;
@@ -101,6 +103,8 @@ void *libtwit_init();
 void libtwit_deinit();
 
 void display_tweets(struct status *starting_tweet);
+
+void destroy_user_data(struct twitter_user *user);
 
 struct status *parse_status(xmlNodePtr cur);
 
