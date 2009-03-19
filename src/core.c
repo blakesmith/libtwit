@@ -383,7 +383,7 @@ xml_memory *send_get_request(char *url, char *file, char *options[][2], int opti
 }
 
 struct status 
-*parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length)
+*parse_status_doc(char *url, char *tweet_doc, char *options[][2], int options_length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur;

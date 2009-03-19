@@ -132,7 +132,7 @@ extern size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *dat
 
 struct xml_memory *send_get_request(char *url, char *file, char *options[][2], int options_length);
 
-struct status *parse_tweet_doc(char *url, char *tweet_doc, char *options[][2], int options_length);
+struct status *parse_status_doc(char *url, char *tweet_doc, char *options[][2], int options_length);
 
 
 

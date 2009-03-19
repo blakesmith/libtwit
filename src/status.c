@@ -34,7 +34,7 @@ libtwit_check_update_length(char *message)
 struct status
 *libtwit_parse_public_timeline()
 {
-	struct status *public_timeline = parse_tweet_doc(STATUS_URL, PUBLIC_TIMELINE, NULL, 0);
+	struct status *public_timeline = parse_status_doc(STATUS_URL, PUBLIC_TIMELINE, NULL, 0);
 
 	return public_timeline;
 }
@@ -42,7 +42,7 @@ struct status
 struct status 
 *libtwit_parse_friends_timeline(char *optional_parameters[][2], int param_length)
 {
-	struct status *user_timeline = parse_tweet_doc(STATUS_URL, FRIENDS_TIMELINE, optional_parameters, param_length);
+	struct status *user_timeline = parse_status_doc(STATUS_URL, FRIENDS_TIMELINE, optional_parameters, param_length);
 	
 	return user_timeline;
 }
@@ -50,7 +50,7 @@ struct status
 struct status 
 *libtwit_parse_user_timeline(char *optional_parameters[][2], int param_length)
 {
-	struct status *user_timeline = parse_tweet_doc(STATUS_URL, USER_TIMELINE, optional_parameters, param_length);
+	struct status *user_timeline = parse_status_doc(STATUS_URL, USER_TIMELINE, optional_parameters, param_length);
 	
 	return user_timeline;
 }
