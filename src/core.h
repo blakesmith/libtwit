@@ -56,7 +56,7 @@ extern enum {
 } libtwit_code;
 
 
-struct twitter_user
+struct basic_user
 {
 	int id;
 	xmlChar *name;
@@ -83,7 +83,7 @@ struct status
 	int in_reply_to_user_id;
 	int favorited;
 	xmlChar *in_reply_to_screen_name;
-	struct twitter_user *user;
+	struct basic_user *user;
 	xmlChar *stored_node_ptr[STATUS_LENGTH];
 };
 
@@ -98,7 +98,7 @@ extern CURLcode libtwit_curl_code;
 extern char *libtwit_twitter_username;
 extern char *libtwit_twitter_password;
 
-void destroy_tweets(struct status *current);
+void destroy_statuses(struct status *current);
 
 void *libtwit_init();
 
@@ -106,17 +106,17 @@ void libtwit_deinit();
 
 xmlDocPtr open_xml_file(struct xml_memory *mem);
 
-struct status *create_tweet(struct status *previous_node);
+struct status *create_status(struct status *previous_node);
 
-struct twitter_user *create_user();
+struct basic_user *create_basic_user();
 
 xmlChar *get_node_value(xmlNodePtr parent, char *search_string);
 
 xmlNodePtr get_node_ptr(xmlNodePtr parent, char *search_string);
 
-struct twitter_user *get_user_data(xmlNodePtr parent);
+struct basic_user *get_basic_user_data(xmlNodePtr parent);
 
-void destroy_user_data(struct twitter_user *user);
+void destroy_basic_user_data(struct basic_user *user);
 
 int sanitize_string_bool(xmlChar *test_string);
 

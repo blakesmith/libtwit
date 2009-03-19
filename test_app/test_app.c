@@ -115,7 +115,7 @@ void handle_tweets(struct status *first_tweet)
 	}
 	else
 		display_tweets(first_tweet);
-		destroy_tweets(first_tweet);
+		destroy_statuses(first_tweet);
 }
 
 int main(int argc, char *argv[])

@@ -33,13 +33,13 @@ char *libtwit_twitter_username;
 char *libtwit_twitter_password;
 
 void 
-destroy_tweets(struct status *current)
+destroy_statuses(struct status *current)
 {
 
 	while (current != NULL) {
 		struct status *i = current->next;
 		destroy_status_data(current);
-		destroy_user_data(current->user);
+		destroy_basic_user_data(current->user);
 		free(current->user);
 		free(current);
 		current = i;
@@ -73,7 +73,7 @@ open_xml_file(struct xml_memory *mem)
 }
 
 struct status 
-*create_tweet(struct status *previous_node)
+*create_status(struct status *previous_node)
 {
 	struct status *newTweet;
 	newTweet = malloc(sizeof(struct status));
@@ -88,11 +88,11 @@ struct status
 	return newTweet;
 }
 
-struct twitter_user 
-*create_user()
+struct basic_user 
+*create_basic_user()
 {
-	struct twitter_user *newUser;
-	newUser = malloc(sizeof(struct twitter_user));
+	struct basic_user *newUser;
+	newUser = malloc(sizeof(struct basic_user));
 
 	return newUser;
 }
@@ -120,10 +120,10 @@ get_node_ptr(xmlNodePtr parent, char *search_string)
 	}
 }
 
-struct twitter_user 
-*get_user_data(xmlNodePtr parent)
+struct basic_user 
+*get_basic_user_data(xmlNodePtr parent)
 {
-	struct twitter_user *new_user = create_user();
+	struct basic_user *new_user = create_basic_user();
 	int i;
 	char *search_strings[] = {
 		"id",
@@ -155,7 +155,7 @@ struct twitter_user
 }
 
 void
-destroy_user_data(struct twitter_user *user)
+destroy_basic_user_data(struct basic_user *user)
 {
 	int i;
 
@@ -198,7 +198,7 @@ struct status
 	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
 			previous_status = current_status; /* First loop this is NULL */
-			current_status = create_tweet(previous_status);
+			current_status = create_status(previous_status);
 
 			if (previous_status != NULL)
 				previous_status->next = current_status;
@@ -214,7 +214,7 @@ struct status
 			current_status->next = NULL;
 			current_status->prev = previous_status;
 			strptime((char *)current_status->stored_node_ptr[0], "%a %b %d %H:%M:%S +0000 %Y", &(current_status->created_at)); /* Sets the created_at */
-			current_status->user = get_user_data(get_node_ptr(cur, "user"));
+			current_status->user = get_basic_user_data(get_node_ptr(cur, "user"));
 			current_status->id = atoi(current_status->stored_node_ptr[1]);
 			current_status->text = current_status->stored_node_ptr[2];
 			current_status->source = current_status->stored_node_ptr[3];
