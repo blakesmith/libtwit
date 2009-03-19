@@ -239,56 +239,6 @@ destroy_status_data(struct status *current_status)
 		xmlFree(current_status->stored_node_ptr[i]);
 }
 
-void 
-display_tweets(struct status *starting_tweet)
-{
-	struct status *i;
-
-	for (i = starting_tweet; i != NULL; i = i->next) {
-		char created_char[SLENGTH];
-		strftime(created_char, SLENGTH, "%a %b %d %H:%M:%S %Y", &(i->created_at));
-		printf("created_at: %s\n"
-			"id: %i\n"
-			"text: %s\n"
-			"source: %s\n"
-			"truncated: %i\n"
-			"in_reply_to_status_id: %i\n"
-			"in_reply_to_user_id: %i\n"
-			"favorited: %i\n"
-			"in_reply_to_screen_name: %s\n" 
-			"user: \n"
-			"\tid: %i\n"
-			"\tname: %s\n"
-			"\tscreen_name: %s\n"
-			"\tlocation: %s\n"
-			"\tdescription: %s\n"
-			"\tprofile_image_url: %s\n"
-			"\turl: %s\n"
-			"\tprotected: %i\n"
-			"\tfollowers_count: %i\n"
-			"===================================\n",
-			
-			created_char,
-			i->id,
-			i->text,
-			i->source,
-			i->truncated,
-			i->in_reply_to_status_id,
-			i->in_reply_to_user_id,
-			i->favorited,
-			i->in_reply_to_screen_name,
-			i->user->id,
-			i->user->name,
-			i->user->screen_name,
-			i->user->location,
-			i->user->description,
-			i->user->profile_image_url,
-			i->user->url,
-			i->user->prot,
-			i->user->followers_count);
-	}
-}
-
 int 
 send_post_request(char *url, char *file, char *options[][2], int options_length)
 {

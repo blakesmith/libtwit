@@ -124,8 +124,6 @@ struct status *parse_status(xmlNodePtr cur);
 
 void destroy_status_data(struct status *current_status);
 
-void display_tweets(struct status *starting_tweet);
-
 int send_post_request(char *url, char *file, char *options[][2], int options_length);
 
 extern size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);

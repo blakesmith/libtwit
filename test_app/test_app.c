@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libtwit/status.h>
+#include <libtwit/output.h>
 
 void parse_action(char *argv[])
 {
@@ -114,7 +115,7 @@ void handle_tweets(struct status *first_tweet)
 		exit(0);
 	}
 	else
-		display_tweets(first_tweet);
+		status_printf(first_tweet);
 		destroy_statuses(first_tweet);
 }
 

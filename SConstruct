@@ -19,14 +19,13 @@ def do_header():
 	for header in headers:
 		env.Install(header_dir, header)
 
-libtwit = env.SharedLibrary('libtwit', ['src/core.c', 'src/status.c', 'src/account.c'])
-test_app = env.Program('test_app/test_app.c', LIBS=['libtwit'], LIBPATH=['.'])
+cfiles = glob.glob("src/*.c")
+libtwit = env.SharedLibrary('libtwit', cfiles)
 
 if len(sys.argv) > 1:
 	if sys.argv[1] == "install":
 		do_header()
 
-env.Install('/usr/local/bin', test_app)
 env.Install('/usr/local/lib', libtwit)
-env.Alias('install', ['/usr/local/bin', '/usr/local/lib', '/usr/local/include'])
+env.Alias('install', ['/usr/local/lib', '/usr/local/include'])
 

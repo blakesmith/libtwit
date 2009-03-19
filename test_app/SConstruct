@@ -1,0 +1,15 @@
+#J vim:syntax=python
+#
+cflags= ["-ggdb"]
+env = Environment(CFLAGS=cflags)
+conf = Configure(env)
+conf.CheckLib('curl')
+if conf.CheckLib('libxml2'):
+	conf.env.Append(CFLAGS = ['-I/usr/include/libxml2'])
+env = conf.Finish()
+
+test_app = env.Program('test_app.c', LIBS=['libtwit'], LIBPATH=['.'])
+
+env.Install('/usr/local/bin', test_app)
+env.Alias('install', ['/usr/local/bin'])
+
