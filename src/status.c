@@ -34,7 +34,7 @@ libtwit_check_update_length(char *message)
 struct status
 *libtwit_parse_public_timeline()
 {
-	struct status *public_timeline = parse_status_doc(STATUS_URL, PUBLIC_TIMELINE, NULL, 0);
+	struct status *public_timeline = parse_status_doc(GET_REQUEST, STATUS_URL, PUBLIC_TIMELINE, NULL, 0);
 
 	return public_timeline;
 }
@@ -42,7 +42,7 @@ struct status
 struct status 
 *libtwit_parse_friends_timeline(char *optional_parameters[][2], int param_length)
 {
-	struct status *user_timeline = parse_status_doc(STATUS_URL, FRIENDS_TIMELINE, optional_parameters, param_length);
+	struct status *user_timeline = parse_status_doc(GET_REQUEST, STATUS_URL, FRIENDS_TIMELINE, optional_parameters, param_length);
 	
 	return user_timeline;
 }
@@ -50,27 +50,27 @@ struct status
 struct status 
 *libtwit_parse_user_timeline(char *optional_parameters[][2], int param_length)
 {
-	struct status *user_timeline = parse_status_doc(STATUS_URL, USER_TIMELINE, optional_parameters, param_length);
+	struct status *user_timeline = parse_status_doc(GET_REQUEST, STATUS_URL, USER_TIMELINE, optional_parameters, param_length);
 	
 	return user_timeline;
 }
 
-int 
-libtwit_status_update(char *message)
+struct status 
+*libtwit_status_update(char *message)
 {
-	int success;
+	struct status *status_update;
 
 	char *options[][2] = {
 		{ "status", message }
 	};
 
 	if (libtwit_check_update_length(message) == LIBTWIT_MESSAGE_TOO_LONG) 
-		return LIBTWIT_MESSAGE_TOO_LONG;
+		return;
 	else {
-		success = send_post_request(STATUS_URL, UPDATE, options, LENGTH(options));
-		if (success == LIBTWIT_OK)
-			return LIBTWIT_OK;
+		status_update = parse_status_doc(POST_REQUEST, STATUS_URL, UPDATE, options, LENGTH(options));
+		if (status_update != NULL)
+			return status_update;
 		else
-			return LIBTWIT_TRANSMISSION_ERROR;
+			return NULL;
 	}
 }

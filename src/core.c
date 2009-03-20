@@ -195,7 +195,11 @@ struct status
 		"favorited",
 		"in_reply_to_screen_name"
 	};
-	for (cur = cur->xmlChildrenNode; cur != NULL; cur = cur->next) {
+	/* If the root element of the xml document isn't a status element, keep stepping through it until it is */
+	while (xmlStrcmp(cur->name, (const xmlChar *)"status"))
+		cur = cur->xmlChildrenNode;
+
+	while (cur != NULL) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
 			previous_status = current_status; /* First loop this is NULL */
 			current_status = create_status(previous_status);
@@ -223,6 +227,8 @@ struct status
 			current_status->in_reply_to_user_id = atoi(current_status->stored_node_ptr[6]);
 			current_status->favorited = sanitize_string_bool(current_status->stored_node_ptr[7]);
 			current_status->in_reply_to_screen_name = current_status->stored_node_ptr[8];
+
+			cur = cur->next;
 		}
 		else if ((!xmlStrcmp(cur->name, (const xmlChar *)"error")))
 			return NULL;
@@ -239,8 +245,8 @@ destroy_status_data(struct status *current_status)
 		xmlFree(current_status->stored_node_ptr[i]);
 }
 
-int 
-send_post_request(char *url, char *file, char *options[][2], int options_length)
+struct xml_memory 
+*send_post_request(char *url, char *file, char *options[][2], int options_length)
 {
 	int i;
 	struct curl_httppost *message = NULL;
@@ -275,12 +281,10 @@ send_post_request(char *url, char *file, char *options[][2], int options_length)
 		curl_formfree(message);
 		curl_slist_free_all(slist);
 	}
-	free(mem->memory);
-	free(mem);
 	if (libtwit_curl_code == CURLE_OK)
-		return LIBTWIT_OK;
+		return mem;
 	else
-		return libtwit_curl_code;
+		return NULL;
 }
 
 extern size_t
@@ -298,8 +302,8 @@ xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 	return realsize;
 }
 
-struct 
-xml_memory *send_get_request(char *url, char *file, char *options[][2], int options_length)
+struct xml_memory 
+*send_get_request(char *url, char *file, char *options[][2], int options_length)
 {
 	int i;
 	char parameter[SLENGTH];
@@ -333,13 +337,18 @@ xml_memory *send_get_request(char *url, char *file, char *options[][2], int opti
 }
 
 struct status 
-*parse_status_doc(char *url, char *tweet_doc, char *options[][2], int options_length)
+*parse_status_doc(int type, char *url, char *tweet_doc, char *options[][2], int options_length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	struct status *starting_tweet;
 	struct xml_memory *mem;
-	mem = send_get_request(url, tweet_doc, options, options_length);
+	if (type == GET_REQUEST)
+		mem = send_get_request(url, tweet_doc, options, options_length);
+	else if (type == POST_REQUEST)
+		mem = send_post_request(url, tweet_doc, options, options_length);
+	else
+		mem = NULL;
 
 	if (mem) {
 		doc = open_xml_file(mem);

@@ -28,6 +28,11 @@
 
 /* Definitions */
 
+/* Type of request, GET or POST? */
+
+#define GET_REQUEST 50
+#define POST_REQUEST 60
+
 /* Status */
 #define STATUS_URL "http://twitter.com/statuses/"
 #define PUBLIC_TIMELINE "public_timeline.xml"
@@ -124,13 +129,13 @@ struct status *parse_status(xmlNodePtr cur);
 
 void destroy_status_data(struct status *current_status);
 
-int send_post_request(char *url, char *file, char *options[][2], int options_length);
+struct xml_memory *send_post_request(char *url, char *file, char *options[][2], int options_length);
 
 extern size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);
 
 struct xml_memory *send_get_request(char *url, char *file, char *options[][2], int options_length);
 
-struct status *parse_status_doc(char *url, char *tweet_doc, char *options[][2], int options_length);
+struct status *parse_status_doc(int type, char *url, char *tweet_doc, char *options[][2], int options_length);
 
 
 

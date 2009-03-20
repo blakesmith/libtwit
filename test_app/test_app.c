@@ -70,24 +70,7 @@ void parse_action(char *argv[])
 			libtwit_deinit();
 			exit(0);
 		}
-		success = libtwit_status_update(argv[2]);
-		if (success == LIBTWIT_MESSAGE_TOO_LONG) {
-			printf("Message exceeds 140 characters, please shorten it.\n");
-			libtwit_deinit();
-			exit(0);
-		}
-		else if (success == LIBTWIT_TRANSMISSION_ERROR) {
-			printf("libcurl died during transmission for some reason.\n");
-			libtwit_deinit();
-			exit(0);
-		}
-		else if (success == LIBTWIT_OK)
-			printf("Update sent->\"%s\"\n", argv[2]);
-		else {
-			printf("Update died for an unknown reason.");
-			libtwit_deinit();
-			exit(0);
-		}
+		handle_tweets(libtwit_status_update(argv[2]));
 	}
 	else
 	{

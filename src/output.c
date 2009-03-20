@@ -26,6 +26,9 @@ status_printf(struct status *starting_tweet)
 {
 	struct status *i;
 
+	if (starting_tweet == NULL)
+		return;
+
 	for (i = starting_tweet; i != NULL; i = i->next) {
 		char created_char[SLENGTH];
 		strftime(created_char, SLENGTH, "%a %b %d %H:%M:%S %Y", &(i->created_at));
