@@ -246,7 +246,7 @@ destroy_status_data(struct status *current_status)
 }
 
 struct xml_memory 
-*send_post_request(char *url, char *file, char *options[][2], int options_length)
+*send_post_request(char *url, char *file, char *options[][2], size_t options_length)
 {
 	int i;
 	struct curl_httppost *message = NULL;
@@ -303,7 +303,7 @@ xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
 }
 
 struct xml_memory 
-*send_get_request(char *url, char *file, char *options[][2], int options_length)
+*send_get_request(char *url, char *file, char *options[][2], size_t options_length)
 {
 	int i;
 	char parameter[SLENGTH];
@@ -337,7 +337,7 @@ struct xml_memory
 }
 
 struct status 
-*parse_status_doc(int type, char *url, char *tweet_doc, char *options[][2], int options_length)
+*parse_status_doc(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur;
