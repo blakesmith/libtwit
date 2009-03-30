@@ -73,7 +73,7 @@ open_xml_file(struct xml_memory *mem)
 }
 
 struct status 
-*create_status(struct status *previous_node)
+*create_status()
 {
 	struct status *newTweet;
 	newTweet = malloc(sizeof(struct status));
@@ -84,7 +84,6 @@ struct status
 		exit(0);
 	}
 
-	newTweet->prev = previous_node;
 	return newTweet;
 }
 
@@ -119,6 +118,46 @@ get_node_ptr(xmlNodePtr parent, char *search_string)
 		}
 	}
 }
+
+struct status
+*get_status_data(xmlNodePtr parent)
+{
+	struct status *current_status = create_status();
+	int i;
+	char *search_strings[] = {
+		"created_at",
+		"id",
+		"text",
+		"source",
+		"truncated",
+		"in_reply_to_user_id",
+		"in_reply_to_status_id",
+		"favorited",
+		"in_reply_to_screen_name"
+	};
+
+	/* Parse all strings from the xml document */
+	for (i = 0; i < STATUS_LENGTH; ++i) {
+		current_status->stored_node_ptr[i] = get_node_value(parent, search_strings[i]);
+	}
+
+	/* Now put them into the structure with their proper type */
+	strptime((char *)current_status->stored_node_ptr[0], "%a %b %d %H:%M:%S +0000 %Y", &(current_status->created_at)); /* Sets the created_at */
+	current_status->user = get_basic_user_data(get_node_ptr(parent, "user"));
+	current_status->id = atoi(current_status->stored_node_ptr[1]);
+	current_status->text = current_status->stored_node_ptr[2];
+	current_status->source = current_status->stored_node_ptr[3];
+	current_status->truncated = sanitize_string_bool(current_status->stored_node_ptr[4]);
+	current_status->in_reply_to_status_id = atoi(current_status->stored_node_ptr[5]);
+	current_status->in_reply_to_user_id = atoi(current_status->stored_node_ptr[6]);
+	current_status->favorited = sanitize_string_bool(current_status->stored_node_ptr[7]);
+	current_status->in_reply_to_screen_name = current_status->stored_node_ptr[8];
+	current_status->next = NULL;
+	current_status->prev = NULL;
+
+	return current_status;
+}
+
 
 struct basic_user 
 *get_basic_user_data(xmlNodePtr parent)
@@ -184,17 +223,6 @@ struct status
 	struct status *starting_status;
 	struct status *current_status = NULL;
 	struct status *previous_status = NULL;
-	char *search_strings[] = {
-		"created_at",
-		"id",
-		"text",
-		"source",
-		"truncated",
-		"in_reply_to_user_id",
-		"in_reply_to_status_id",
-		"favorited",
-		"in_reply_to_screen_name"
-	};
 	/* If the root element of the xml document isn't a status element, keep stepping through it until it is */
 	while (xmlStrcmp(cur->name, (const xmlChar *)"status"))
 		if (cur->xmlChildrenNode == NULL)
@@ -205,31 +233,15 @@ struct status
 	while (cur != NULL) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
 			previous_status = current_status; /* First loop this is NULL */
-			current_status = create_status(previous_status);
+			current_status = get_status_data(cur);
 
 			if (previous_status != NULL)
 				previous_status->next = current_status;
 			else
 				starting_status = current_status;
 
-			/* Parse all strings from the xml document */
-			for (i = 0; i < STATUS_LENGTH; ++i) {
-				current_status->stored_node_ptr[i] = get_node_value(cur, search_strings[i]);
-			}
-
-			/* Now put them into the structure with their proper type */
 			current_status->next = NULL;
 			current_status->prev = previous_status;
-			strptime((char *)current_status->stored_node_ptr[0], "%a %b %d %H:%M:%S +0000 %Y", &(current_status->created_at)); /* Sets the created_at */
-			current_status->user = get_basic_user_data(get_node_ptr(cur, "user"));
-			current_status->id = atoi(current_status->stored_node_ptr[1]);
-			current_status->text = current_status->stored_node_ptr[2];
-			current_status->source = current_status->stored_node_ptr[3];
-			current_status->truncated = sanitize_string_bool(current_status->stored_node_ptr[4]);
-			current_status->in_reply_to_status_id = atoi(current_status->stored_node_ptr[5]);
-			current_status->in_reply_to_user_id = atoi(current_status->stored_node_ptr[6]);
-			current_status->favorited = sanitize_string_bool(current_status->stored_node_ptr[7]);
-			current_status->in_reply_to_screen_name = current_status->stored_node_ptr[8];
 
 			cur = cur->next;
 		}

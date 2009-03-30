@@ -117,13 +117,15 @@ void libtwit_deinit();
 
 xmlDocPtr open_xml_file(struct xml_memory *mem);
 
-struct status *create_status(struct status *previous_node);
+struct status *create_status();
 
 struct basic_user *create_basic_user();
 
 xmlChar *get_node_value(xmlNodePtr parent, char *search_string);
 
 xmlNodePtr get_node_ptr(xmlNodePtr parent, char *search_string);
+
+struct status *get_status_data(xmlNodePtr parent);
 
 struct basic_user *get_basic_user_data(xmlNodePtr parent);
 
