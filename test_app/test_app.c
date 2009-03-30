@@ -74,12 +74,12 @@ void parse_action(char *argv[])
 	}
 	else if (strcmp(argv[1], "single") == 0)
 	{
-		if (libtwit_verify_credentials(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
+		if (libtwit_verify_credentials(argv[3], argv[4]) == LIBTWIT_CREDENTIAL_ERROR) {
 			printf("Error logging in. Are your credentials correct?\n");
 			libtwit_deinit();
 			exit(0);
 		}
-		handle_tweets(libtwit_parse_single_status(1416036771));
+		handle_tweets(libtwit_parse_single_status(atoi(argv[2])));
 	}
 	else if (strcmp(argv[1], "recent_replies") == 0)
 	{

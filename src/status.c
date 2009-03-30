@@ -59,7 +59,7 @@ struct status
 *libtwit_parse_single_status(int id)
 {
 	char single_status_url[SLENGTH];
-	sprintf(single_status_url, "%s%i.xml", SINGLE_STATUS, id);
+	sprintf(single_status_url, "%s%i.xml", ACTION_SHOW, id);
 
 	struct status *single_status = parse_status_doc(GET_REQUEST, STATUS_URL, single_status_url, NULL, 0);
 
@@ -101,7 +101,7 @@ struct status
 	char id_char[SLENGTH];
 
 	sprintf(id_char, "%i", id);
-	sprintf(destroy_status_url, "%s%s.xml", DESTROY_STATUS, id_char);
+	sprintf(destroy_status_url, "%s%s.xml", ACTION_DESTROY, id_char);
 
 	char *options[][2] = {
 		{ "id", id_char }

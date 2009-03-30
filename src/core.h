@@ -33,15 +33,18 @@
 #define GET_REQUEST 50
 #define POST_REQUEST 60
 
+/* Actions */
+
+#define ACTION_SHOW "show/"
+#define ACTION_DESTROY "destroy/"
+
 /* Status */
 #define STATUS_URL "http://twitter.com/statuses/"
 #define PUBLIC_TIMELINE "public_timeline.xml"
 #define FRIENDS_TIMELINE "friends_timeline.xml"
 #define USER_TIMELINE "user_timeline.xml"
-#define SINGLE_STATUS "show/" /* id.xml is appended to the end of this to specify the status element you want returned. */
 #define UPDATE "update.xml"
 #define RECENT_REPLIES "replies.xml"
-#define DESTROY_STATUS "destroy/" /* Same as SINGLE_STATUS */
 
 /* Account */
 #define ACCOUNT_URL "http://twitter.com/account/"
