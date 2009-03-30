@@ -74,7 +74,7 @@ struct status *libtwit_parse_single_status(int id);
  * - id. The numerical ID of the status you're trying to retrieve.
  */
 
-struct status *libtwit_status_update(char *message);
+struct status *libtwit_status_update(char *status);
 /**
  * statuses/update
  *

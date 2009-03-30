@@ -67,15 +67,15 @@ struct status
 }
 
 struct status 
-*libtwit_status_update(char *message)
+*libtwit_status_update(char *status)
 {
 	struct status *status_update;
 
 	char *options[][2] = {
-		{ "status", message }
+		{ "status", status }
 	};
 
-	if (libtwit_check_update_length(message) == LIBTWIT_MESSAGE_TOO_LONG) 
+	if (libtwit_check_update_length(status) == LIBTWIT_MESSAGE_TOO_LONG) 
 		return;
 	else {
 		status_update = parse_status_doc(POST_REQUEST, STATUS_URL, UPDATE, options, LENGTH(options));
