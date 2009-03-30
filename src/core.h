@@ -38,6 +38,7 @@
 #define PUBLIC_TIMELINE "public_timeline.xml"
 #define FRIENDS_TIMELINE "friends_timeline.xml"
 #define USER_TIMELINE "user_timeline.xml"
+#define SINGLE_STATUS "show/" /* id.xml is appended to the end of this to specify the status element you want returned. */
 #define UPDATE "update.xml"
 
 /* Account */

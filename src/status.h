@@ -30,5 +30,7 @@ struct status *libtwit_parse_friends_timeline(char *optional_parameters[][2], in
 
 struct status *libtwit_parse_user_timeline(char *optional_parameters[][2], int param_length);
 
+struct status *libtwit_parse_single_status(int id);
+
 struct status *libtwit_status_update(char *message);
 #endif

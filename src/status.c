@@ -55,6 +55,17 @@ struct status
 	return user_timeline;
 }
 
+struct status
+*libtwit_parse_single_status(int id)
+{
+	char single_status_url[SLENGTH];
+	sprintf(single_status_url, "%s%i.xml", SINGLE_STATUS, id);
+
+	struct status *single_status = parse_status_doc(GET_REQUEST, STATUS_URL, single_status_url, NULL, 0);
+
+	return single_status;
+}
+
 struct status 
 *libtwit_status_update(char *message)
 {
