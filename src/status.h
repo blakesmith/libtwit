@@ -35,4 +35,6 @@ struct status *libtwit_parse_single_status(int id);
 struct status *libtwit_status_update(char *message);
 
 struct status *libtwit_get_recent_replies(char *optional_parameters[][2], int param_length);
+
+struct status *libtwit_destroy_status(int id);
 #endif

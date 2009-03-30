@@ -90,6 +90,15 @@ void parse_action(char *argv[])
 		}
 		handle_tweets(libtwit_get_recent_replies(NULL, 0));
 	}
+	else if (strcmp(argv[1], "destroy_status") == 0)
+	{
+		if (libtwit_verify_credentials(argv[3], argv[4]) == LIBTWIT_CREDENTIAL_ERROR) {
+			printf("Error logging in. Are your credentials correct?\n");
+			libtwit_deinit();
+			exit(0);
+		}
+		handle_tweets(libtwit_destroy_status(atoi(argv[2])));
+	}
 	else
 	{
 		display_usage();

@@ -93,3 +93,21 @@ struct status
 
 	return recent_replies;
 }
+
+struct status
+*libtwit_destroy_status(int id)
+{
+	char destroy_status_url[SLENGTH];
+	char id_char[SLENGTH];
+
+	sprintf(id_char, "%i", id);
+	sprintf(destroy_status_url, "%s%s.xml", DESTROY_STATUS, id_char);
+
+	char *options[][2] = {
+		{ "id", id_char }
+	};
+
+	struct status *destroy_status = parse_status_doc(POST_REQUEST, STATUS_URL, destroy_status_url, options, LENGTH(options));
+
+	return destroy_status;
+}
