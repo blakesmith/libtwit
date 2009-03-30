@@ -197,7 +197,10 @@ struct status
 	};
 	/* If the root element of the xml document isn't a status element, keep stepping through it until it is */
 	while (xmlStrcmp(cur->name, (const xmlChar *)"status"))
-		cur = cur->xmlChildrenNode;
+		if (cur->xmlChildrenNode == NULL)
+			return NULL;
+		else
+			cur = cur->xmlChildrenNode;
 
 	while (cur != NULL) {
 		if ((!xmlStrcmp(cur->name, (const xmlChar *)"status"))) {
