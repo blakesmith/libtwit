@@ -81,6 +81,15 @@ void parse_action(char *argv[])
 		}
 		handle_tweets(libtwit_parse_single_status(1416036771));
 	}
+	else if (strcmp(argv[1], "recent_replies") == 0)
+	{
+		if (libtwit_verify_credentials(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
+			printf("Error logging in. Are your credentials correct?\n");
+			libtwit_deinit();
+			exit(0);
+		}
+		handle_tweets(libtwit_get_recent_replies(NULL, 0));
+	}
 	else
 	{
 		display_usage();
@@ -106,9 +115,10 @@ void handle_tweets(struct status *first_tweet)
 		printf("Failed to retrieve timeline. Did you type your login information correctly?\n");
 		exit(0);
 	}
-	else
+	else {
 		status_printf(first_tweet);
 		destroy_statuses(first_tweet);
+	}
 }
 
 int main(int argc, char *argv[])

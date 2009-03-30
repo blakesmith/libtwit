@@ -85,3 +85,11 @@ struct status
 			return NULL;
 	}
 }
+
+struct status
+*libtwit_get_recent_replies(char *optional_parameters[][2], int param_length)
+{
+	struct status *recent_replies = parse_status_doc(GET_REQUEST, STATUS_URL, RECENT_REPLIES, optional_parameters, param_length);
+
+	return recent_replies;
+}

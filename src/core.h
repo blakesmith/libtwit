@@ -40,6 +40,7 @@
 #define USER_TIMELINE "user_timeline.xml"
 #define SINGLE_STATUS "show/" /* id.xml is appended to the end of this to specify the status element you want returned. */
 #define UPDATE "update.xml"
+#define RECENT_REPLIES "replies.xml"
 
 /* Account */
 #define ACCOUNT_URL "http://twitter.com/account/"
