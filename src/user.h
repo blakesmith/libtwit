@@ -16,14 +16,12 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-#ifndef OUTPUT_H
-#define OUTPUT_H
+
+#ifndef LIBTWIT_USER_H
+#define LIBTWIT_USER_H
 
 #include "core.h"
 
-void status_printf(struct status *starting_tweet);
-
-void basic_user_printf(struct basic_user *starting_user);
+struct basic_user *libtwit_user_friends(char *optional_parameters[][2], int param_length);
 
 #endif
-

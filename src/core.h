@@ -46,6 +46,9 @@
 #define UPDATE "update.xml"
 #define RECENT_REPLIES "replies.xml"
 
+/* User */
+#define USER_FRIENDS "friends.xml"
+
 /* Account */
 #define ACCOUNT_URL "http://twitter.com/account/"
 #define VERIFY_CREDENTIALS "verify_credentials.xml"
@@ -114,6 +117,8 @@ extern char *libtwit_twitter_password;
 
 void destroy_statuses(struct status *current);
 
+void destroy_basic_user_list(struct basic_user *current);
+
 void *libtwit_init();
 
 void libtwit_deinit();
@@ -149,6 +154,8 @@ struct xml_memory *send_get_request(char *url, char *file, char *options[][2], s
 xmlDocPtr send_http_request(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length);
 
 struct status *parse_status_doc(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length);
+
+struct basic_user *parse_basic_user_doc(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length);
 
 
 

@@ -35,12 +35,25 @@ char *libtwit_twitter_password;
 void 
 destroy_statuses(struct status *current)
 {
-
 	while (current != NULL) {
 		struct status *i = current->next;
 		destroy_status_data(current);
 		destroy_basic_user_data(current->user);
 		free(current->user);
+		free(current);
+		current = i;
+	}
+}
+
+void 
+destroy_basic_user_list(struct basic_user *current)
+{
+
+	while (current != NULL) {
+		struct basic_user *i = current->next;
+		destroy_status_data(current->status);
+		destroy_basic_user_data(current);
+		free(current->status);
 		free(current);
 		current = i;
 	}
@@ -427,5 +440,21 @@ struct status
 	xmlFreeDoc(doc);
 
 	return starting_tweet;
+}
+
+struct basic_user 
+*parse_basic_user_doc(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length)
+{
+	xmlDocPtr doc;
+	xmlNodePtr cur;
+	struct basic_user *starting_user;
+
+	doc = send_http_request(type, url, tweet_doc, options, options_length);
+	cur = xmlDocGetRootElement(doc);
+	starting_user = parse_basic_user(cur);
+	
+	xmlFreeDoc(doc);
+
+	return starting_user;
 }
 

@@ -20,11 +20,14 @@
 #define TEST_APP_H
 
 #include <libtwit/status.h>
+#include <libtwit/user.h>
 
 void parse_action(char *arg[]);
 
 void display_usage();
 
 void handle_tweets(struct status *first_tweet);
+
+void handle_basic_user(struct basic_user *first_user);
 
 #endif

@@ -99,6 +99,15 @@ void parse_action(char *argv[])
 		}
 		handle_tweets(libtwit_destroy_status(atoi(argv[2])));
 	}
+	else if (strcmp(argv[1], "user_friends") == 0)
+	{
+		if (libtwit_verify_credentials(argv[2], argv[3]) == LIBTWIT_CREDENTIAL_ERROR) {
+			printf("Error logging in. Are your credentials correct?\n");
+			libtwit_deinit();
+			exit(0);
+		}
+		handle_basic_user(libtwit_user_friends(NULL, 0));
+	}
 	else
 	{
 		display_usage();
@@ -127,6 +136,19 @@ void handle_tweets(struct status *first_tweet)
 	else {
 		status_printf(first_tweet);
 		destroy_statuses(first_tweet);
+	}
+}
+
+void handle_basic_user(struct basic_user *first_user)
+{
+	if (first_user == NULL)
+	{
+		printf("Failed to retrieve user data. Did you type your login information correctly?\n");
+		exit(0);
+	}
+	else {
+		basic_user_printf(first_user);
+		destroy_basic_user_list(first_user);
 	}
 }
 

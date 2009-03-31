@@ -73,3 +73,57 @@ status_printf(struct status *starting_tweet)
 			i->user->followers_count);
 	}
 }
+
+void
+basic_user_printf(struct basic_user *starting_user)
+{
+	struct basic_user *i;
+
+	if (starting_user == NULL)
+		return;
+
+	for (i = starting_user; i != NULL; i = i->next) {
+		char created_char[SLENGTH];
+		strftime(created_char, SLENGTH, "%a %b %d %H:%M:%S %Y", &(i->status->created_at));
+		printf("id: %i\n"
+			"name: %s\n"
+			"screen_name: %s\n"
+			"location: %s\n"
+			"description: %s\n"
+			"profile_image_url: %s\n"
+			"url: %s\n"
+			"protected: %i\n"
+			"followers_count: %i\n"
+			"\tcreated_at: %s\n"
+			"\tid: %i\n"
+			"\ttext: %s\n"
+			"\tsource: %s\n"
+			"\ttruncated: %i\n"
+			"\tin_reply_to_status_id: %i\n"
+			"\tin_reply_to_user_id: %i\n"
+			"\tfavorited: %i\n"
+			"\tin_reply_to_screen_name: %s\n" 
+			"\tuser: \n"
+			"===================================\n",
+
+			i->id,
+			i->name,
+			i->screen_name,
+			i->location,
+			i->description,
+			i->profile_image_url,
+			i->url,
+			i->prot,
+			i->followers_count,
+			created_char,
+			i->status->id,
+			i->status->text,
+			i->status->source,
+			i->status->truncated,
+			i->status->in_reply_to_status_id,
+			i->status->in_reply_to_user_id,
+			i->status->favorited,
+			i->status->in_reply_to_screen_name,
+			i->status->user);
+	}
+}

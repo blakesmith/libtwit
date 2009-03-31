@@ -16,14 +16,14 @@
 * with this program; if not, write to the Free Software Foundation, Inc.,
 * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-#ifndef OUTPUT_H
-#define OUTPUT_H
 
+#include "user.h"
 #include "core.h"
 
-void status_printf(struct status *starting_tweet);
+struct basic_user
+*libtwit_user_friends(char *optional_parameters[][2], int param_length)
+{
+	struct basic_user *user_friends = parse_basic_user_doc(GET_REQUEST, STATUS_URL, USER_FRIENDS, optional_parameters, param_length);
 
-void basic_user_printf(struct basic_user *starting_user);
-
-#endif
-
+	return user_friends;
+}
