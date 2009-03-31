@@ -64,14 +64,6 @@ libtwit_deinit()
 	curl_global_cleanup();
 }
 
-xmlDocPtr 
-open_xml_file(struct xml_memory *mem)
-{
-	xmlDocPtr doc;
-	doc = xmlReadMemory(mem->memory, (int)mem->size, "noname", NULL, XML_PARSE_NOBLANKS);	
-	return doc;
-}
-
 struct status 
 *create_status()
 {
@@ -117,11 +109,15 @@ get_node_ptr(xmlNodePtr parent, char *search_string)
 			return parent;
 		}
 	}
+	return NULL;
 }
 
 struct status
 *get_status_data(xmlNodePtr parent)
 {
+	if (parent == NULL)
+		return NULL;
+
 	struct status *current_status = create_status();
 	int i;
 	char *search_strings[] = {
@@ -162,6 +158,9 @@ struct status
 struct basic_user 
 *get_basic_user_data(xmlNodePtr parent)
 {
+	if (parent == NULL)
+		return NULL;
+
 	struct basic_user *new_user = create_basic_user();
 	int i;
 	char *search_strings[] = {
@@ -180,6 +179,7 @@ struct basic_user
 		new_user->stored_node_ptr[i] = get_node_value(parent, search_strings[i]);
 	}
 
+	new_user->status = get_status_data(get_node_ptr(parent, "status"));
 	new_user->id = atoi(new_user->stored_node_ptr[0]);
 	new_user->name = new_user->stored_node_ptr[1];
 	new_user->screen_name = new_user->stored_node_ptr[2];
@@ -249,6 +249,42 @@ struct status
 			return NULL;
 	}
 	return starting_status;
+}
+
+struct basic_user 
+*parse_basic_user(xmlNodePtr cur)
+{
+	int i;
+	xmlNodePtr children;
+	struct basic_user *starting_basic_user;
+	struct basic_user *current_basic_user = NULL;
+	struct basic_user *previous_basic_user = NULL;
+	/* If the root element of the xml document isn't a status element, keep stepping through it until it is */
+	while (xmlStrcmp(cur->name, (const xmlChar *)"user"))
+		if (cur->xmlChildrenNode == NULL)
+			return NULL;
+		else
+			cur = cur->xmlChildrenNode;
+
+	while (cur != NULL) {
+		if ((!xmlStrcmp(cur->name, (const xmlChar *)"user"))) {
+			previous_basic_user = current_basic_user; /* First loop this is NULL */
+			current_basic_user = get_basic_user_data(cur);
+
+			if (previous_basic_user != NULL)
+				previous_basic_user->next = current_basic_user;
+			else
+				starting_basic_user = current_basic_user;
+
+			current_basic_user->next = NULL;
+			current_basic_user->prev = previous_basic_user;
+
+			cur = cur->next;
+		}
+		else if ((!xmlStrcmp(cur->name, (const xmlChar *)"error")))
+			return NULL;
+	}
+	return starting_basic_user;
 }
 
 void
@@ -351,8 +387,8 @@ struct xml_memory
 		return NULL;
 }
 
-struct status 
-*parse_status_doc(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length)
+xmlDocPtr
+send_http_request(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur;
@@ -366,16 +402,30 @@ struct status
 		mem = NULL;
 
 	if (mem) {
-		doc = open_xml_file(mem);
-		cur = xmlDocGetRootElement(doc);
-		starting_tweet = parse_status(cur);
-		xmlFreeDoc(doc);
+		doc = xmlReadMemory(mem->memory, (int)mem->size, "noname", NULL, XML_PARSE_NOBLANKS);
 		free(mem->memory);
 		free(mem);
-		
-		return starting_tweet;
+
+		return doc;
 	}
 	else
 		return NULL;
+}
+
+
+struct status 
+*parse_status_doc(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length)
+{
+	xmlDocPtr doc;
+	xmlNodePtr cur;
+	struct status *starting_tweet;
+
+	doc = send_http_request(type, url, tweet_doc, options, options_length);
+	cur = xmlDocGetRootElement(doc);
+	starting_tweet = parse_status(cur);
+	
+	xmlFreeDoc(doc);
+
+	return starting_tweet;
 }
 

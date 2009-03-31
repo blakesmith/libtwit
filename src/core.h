@@ -69,6 +69,8 @@ extern enum {
 
 struct basic_user
 {
+	struct basic_user *prev;
+	struct basic_user *next;
 	int id;
 	xmlChar *name;
 	xmlChar *screen_name;
@@ -78,6 +80,7 @@ struct basic_user
 	xmlChar *url;
 	int prot;
 	int followers_count;
+	struct status *status;
 	xmlChar *stored_node_ptr[USER_LENGTH];
 };
 
@@ -115,8 +118,6 @@ void *libtwit_init();
 
 void libtwit_deinit();
 
-xmlDocPtr open_xml_file(struct xml_memory *mem);
-
 struct status *create_status();
 
 struct basic_user *create_basic_user();
@@ -135,6 +136,8 @@ int sanitize_string_bool(xmlChar *test_string);
 
 struct status *parse_status(xmlNodePtr cur);
 
+struct basic_user *parse_basic_user(xmlNodePtr cur);
+
 void destroy_status_data(struct status *current_status);
 
 struct xml_memory *send_post_request(char *url, char *file, char *options[][2], size_t options_length);
@@ -142,6 +145,8 @@ struct xml_memory *send_post_request(char *url, char *file, char *options[][2], 
 extern size_t xml_write_callback(void *ptr, size_t size, size_t nmemb, void *data);
 
 struct xml_memory *send_get_request(char *url, char *file, char *options[][2], size_t options_length);
+
+xmlDocPtr send_http_request(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length);
 
 struct status *parse_status_doc(int type, char *url, char *tweet_doc, char *options[][2], size_t options_length);
 
