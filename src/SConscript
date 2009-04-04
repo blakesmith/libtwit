@@ -9,7 +9,9 @@ conf = Configure(env)
 conf.CheckLib('curl')
 conf.env.Append(CFLAGS = cflags)
 if conf.CheckLib('libxml2'):
-	conf.env.Append(CFLAGS = ['-I/usr/include/libxml2'])
+	xmlflags = os.popen('xml2-config --cflags').read()
+	xmlflags = xmlflags.replace('\n', ' ')
+	conf.env.Append(CFLAGS = xmlflags)
 env = conf.Finish()
 
 def do_header():
